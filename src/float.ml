@@ -3,6 +3,8 @@ open! Printf
 module Bytes = Bytes0
 include Float0
 
+module String = String_base
+
 let raise_s = Error.raise_s
 
 module T = struct

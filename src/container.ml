@@ -139,7 +139,7 @@ end
 
 module Make0 (T : Make0_arg) = struct
   include Make_gen (struct
-      include T
+      include (T : module type of struct include T end with type t := T.t)
 
       type 'a t = T.t
       type 'a elt = T.Elt.t

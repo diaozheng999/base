@@ -6,6 +6,7 @@
 open! Import
 include Int64_replace_polymorphic_compare
 
+module String = String_base
 
 module T0 = struct
   module T = struct
@@ -42,7 +43,7 @@ module W : sig
     include T0
   end
 
-  type t = int64
+  (* type t = int64 *)
 
   val wrap_exn : Caml.Int64.t -> t
   val wrap_modulo : Caml.Int64.t -> t
@@ -87,7 +88,7 @@ module W : sig
 end = struct
   include T0
 
-  type t = int64
+  (* type t = int64 *)
 
   let wrap_exn x =
     (* Raises if the int64 value does not fit on int63. *)

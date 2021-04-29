@@ -2,7 +2,7 @@ open! Import
 
 let r = ref [ "Base.Sexp.pp_hum" ]
 let all () = !r
-let register p = r := p :: !r
+let register p = r.contents <- (p :: !r)
 
 module type S = sig
   type t

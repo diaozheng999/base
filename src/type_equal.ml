@@ -79,8 +79,10 @@ module Obj = struct
   module Extension_constructor = struct
     [@@@ocaml.warning "-3"]
 
-    let id = Caml.Obj.extension_id
-    let of_val = Caml.Obj.extension_constructor
+    external%private id_internal : extension_constructor -> string = "%identity"
+    external%private of_val_internal : 'a -> extension_constructor = "RE_EXN_ID" [@@bs.send]
+    let id exn = String_base.hash (id_internal exn)
+    let of_val exn = of_val_internal (Js.Exn.anyToExnInternal exn)
   end
 end
 

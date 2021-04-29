@@ -390,8 +390,9 @@ val common_prefix2_length : t -> t -> int
 val concat_array : ?sep:t -> t array -> t
 
 (** Slightly faster hash function on strings. *)
-external hash : t -> int = "Base_hash_string"
-[@@noalloc]
+external hash : string -> int = "hashString"
+    [@@bs.module "@nasi/js-base-runtime"]
+    [@@bs.scope "hash"]
 
 (** Fast equality function on strings, doesn't use [compare_val]. *)
 val equal : t -> t -> bool

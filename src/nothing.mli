@@ -22,7 +22,7 @@ open! Import
     another case where [[@deriving enumerate]] could be useful is when this type is part
     of some larger type.
 *)
-type t = | [@@deriving_inline enumerate, sexp_grammar]
+type t = Nothing [@@deriving_inline enumerate, sexp_grammar]
 
 val all : t list
 val t_sexp_grammar : t Ppx_sexp_conv_lib.Sexp_grammar.t

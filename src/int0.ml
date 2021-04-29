@@ -14,6 +14,8 @@
    Defining [module Int = Int0] is also necessary because it prevents ocamldep
    from mistakenly causing a file to depend on [Base.Int]. *)
 
+open Shadow
+
 let to_string = Caml.string_of_int
 let of_string = Caml.int_of_string
 let to_float = Caml.float_of_int

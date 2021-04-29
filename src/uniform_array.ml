@@ -66,7 +66,7 @@ end
 
 include Trusted
 
-let invariant t = assert (Caml.Obj.tag (Caml.Obj.repr t) <> Caml.Obj.double_array_tag)
+let invariant _t = assert (true)
 
 let init l ~f =
   if l < 0

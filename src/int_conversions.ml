@@ -2,6 +2,8 @@ open! Import
 module Int = Int0
 module Sys = Sys0
 
+module String = String_base
+
 let convert_failure x a b to_string =
   Printf.failwithf
     "conversion from %s to %s failed: %s is out of range"
@@ -9,13 +11,13 @@ let convert_failure x a b to_string =
     b
     (to_string x)
     ()
-[@@cold] [@@inline never] [@@local never] [@@specialise never]
+[@@cold]
 ;;
 
 let num_bits_int = Sys.int_size_in_bits
 let num_bits_int32 = 32
 let num_bits_int64 = 64
-let num_bits_nativeint = Word_size.num_bits Word_size.word_size
+let num_bits_nativeint = 32
 let () = assert (num_bits_int = 63 || num_bits_int = 31 || num_bits_int = 32)
 let min_int32 = Caml.Int32.min_int
 let max_int32 = Caml.Int32.max_int
@@ -146,8 +148,8 @@ let nativeint_to_int32_failure x =
 ;;
 
 let () = assert (num_bits_int32 <= num_bits_nativeint)
-let int32_to_nativeint = Caml.Nativeint.of_int32
-let nativeint_to_int32_trunc = Caml.Nativeint.to_int32
+external int32_to_nativeint : int32 -> int32 = "%identity"
+external nativeint_to_int32_trunc : int32 -> int32 = "%identity"
 
 let nativeint_is_representable_as_int32 =
   if num_bits_nativeint <= num_bits_int32
@@ -174,8 +176,8 @@ let nativeint_to_int32_exn x =
 
 let int64_to_nativeint_failure x = convert_failure x "int64" "nativeint" int64_to_string
 let () = assert (num_bits_int64 >= num_bits_nativeint)
-let int64_to_nativeint_trunc = Caml.Int64.to_nativeint
-let nativeint_to_int64 = Caml.Int64.of_nativeint
+let int64_to_nativeint_trunc = Caml.Int64.to_int32
+let nativeint_to_int64 = Caml.Int64.of_int32
 
 let int64_is_representable_as_nativeint =
   if num_bits_int64 <= num_bits_nativeint

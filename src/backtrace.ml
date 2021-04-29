@@ -1,6 +1,8 @@
 open! Import
 module Sys = Sys0
 
+module String = String_base
+
 type t = Caml.Printexc.raw_backtrace
 
 let elide = ref am_testing

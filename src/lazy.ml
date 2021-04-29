@@ -1,5 +1,5 @@
 open! Import
-include Caml.Lazy
+include (Caml.Lazy : module type of struct include Caml.Lazy end with type 'a t := 'a lazy_t)
 
 type 'a t = 'a lazy_t [@@deriving_inline sexp, sexp_grammar]
 

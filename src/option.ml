@@ -53,10 +53,6 @@ sig
   [@@@end]
 end)
 
-type 'a t = 'a option =
-  | None
-  | Some of 'a
-
 let is_none = function
   | None -> true
   | _ -> false

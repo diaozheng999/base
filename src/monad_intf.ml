@@ -302,38 +302,38 @@ module type S_indexed = sig
 end
 
 module S_to_S2 (X : S) : S2 with type ('a, 'e) t = 'a X.t = struct
-  include X
+  include (X : module type of struct include X end with type 'a t := 'a X.t)
 
   type ('a, 'e) t = 'a X.t
 end
 
 module S2_to_S3 (X : S2) : S3 with type ('a, 'd, 'e) t = ('a, 'd) X.t = struct
-  include X
+  include (X : module type of struct include X end with type ('a, 'e) t := ('a, 'e) X.t)
 
   type ('a, 'd, 'e) t = ('a, 'd) X.t
 end
 
 module S_to_S_indexed (X : S) : S_indexed with type ('a, 'i, 'j) t = 'a X.t = struct
-  include X
+  include (X : module type of struct include X end with type 'a t := 'a X.t)
 
   type ('a, 'i, 'j) t = 'a X.t
 end
 
 module S2_to_S (X : S2) : S with type 'a t = ('a, unit) X.t = struct
-  include X
+  include (X : module type of struct include X end with type ('a, 'e) t := ('a, 'e) X.t)
 
   type 'a t = ('a, unit) X.t
 end
 
 module S3_to_S2 (X : S3) : S2 with type ('a, 'e) t = ('a, 'e, unit) X.t = struct
-  include X
+  include (X : module type of struct include X end with type ('a, 'd, 'e) t := ('a, 'd, 'e) X.t)
 
   type ('a, 'e) t = ('a, 'e, unit) X.t
 end
 
 module S_indexed_to_S2 (X : S_indexed) : S2 with type ('a, 'e) t = ('a, 'e, 'e) X.t =
 struct
-  include X
+  include (X : module type of struct include X end with type ('a, 'i, 'j) t := ('a, 'i, 'j) X.t)
 
   type ('a, 'e) t = ('a, 'e, 'e) X.t
 end

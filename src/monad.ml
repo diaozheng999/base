@@ -70,26 +70,25 @@ end
 
 module Make_indexed (M : Basic_indexed) :
   S_indexed with type ('a, 'i, 'j) t := ('a, 'i, 'j) M.t = Make_general (struct
-    include M
-
+    include (M : module type of struct include M end with type ('a, 'i, 'j) t := ('a, 'i, 'j) M.t)
     type ('a, 'i, 'j, 'd, 'e) t = ('a, 'i, 'j) M.t
   end)
 
 module Make3 (M : Basic3) : S3 with type ('a, 'd, 'e) t := ('a, 'd, 'e) M.t =
   Make_general (struct
-    include M
+    include (M : module type of struct include M end with type ('a, 'd, 'e) t := ('a, 'd, 'e) M.t)
 
     type ('a, 'i, 'j, 'd, 'e) t = ('a, 'd, 'e) M.t
   end)
 
 module Make2 (M : Basic2) : S2 with type ('a, 'd) t := ('a, 'd) M.t = Make_general (struct
-    include M
+    include (M : module type of struct include M end with type ('a, 'd) t := ('a, 'd) M.t)
 
     type ('a, 'i, 'j, 'd, 'e) t = ('a, 'd) M.t
   end)
 
 module Make (M : Basic) : S with type 'a t := 'a M.t = Make_general (struct
-    include M
+    include (M : module type of struct include M end with type 'a t := 'a M.t)
 
     type ('a, 'i, 'j, 'd, 'e) t = 'a M.t
   end)
@@ -127,12 +126,12 @@ module Of_monad_indexed
                          end) =
   Of_monad_general
     (struct
-      include Monad
+      include (Monad: module type of struct include Monad end with  type ('a, 'i, 'j) t := ('a, 'i, 'j) Monad.t)
 
       type ('a, 'i, 'j, 'd, 'e) t = ('a, 'i, 'j) Monad.t
     end)
     (struct
-      include M
+      include (M : module type of struct include M end with type ('a, 'i, 'j) t := ('a, 'i, 'j) M.t)
 
       type ('a, 'i, 'j, 'd, 'e) t = ('a, 'i, 'j) M.t
     end)
@@ -146,12 +145,12 @@ module Of_monad3
                   end) =
   Of_monad_general
     (struct
-      include Monad
+      include (Monad : module type of struct include Monad end with type ('a, 'b, 'c) t := ('a, 'b, 'c) Monad.t)
 
       type ('a, 'i, 'j, 'd, 'e) t = ('a, 'd, 'e) Monad.t
     end)
     (struct
-      include M
+      include (M : module type of struct include M end with type ('a, 'b, 'c) t := ('a, 'b, 'c) M.t)
 
       type ('a, 'i, 'j, 'd, 'e) t = ('a, 'd, 'e) M.t
     end)
@@ -165,12 +164,12 @@ module Of_monad2
                   end) =
   Of_monad_general
     (struct
-      include Monad
+      include (Monad : module type of struct include Monad end with type ('a, 'd) t := ('a, 'd) Monad.t)
 
       type ('a, 'i, 'j, 'd, 'e) t = ('a, 'd) Monad.t
     end)
     (struct
-      include M
+      include (M : module type of struct include M end with type ('a, 'd) t := ('a, 'd) M.t)
 
       type ('a, 'i, 'j, 'd, 'e) t = ('a, 'd) M.t
     end)
@@ -184,12 +183,12 @@ module Of_monad
                  end) =
   Of_monad_general
     (struct
-      include Monad
+      include (Monad : module type of struct include Monad end with type 'a t := 'a Monad.t)
 
       type ('a, 'i, 'j, 'd, 'e) t = 'a Monad.t
     end)
     (struct
-      include M
+      include (M : module type of struct include M end with type 'a t := 'a M.t)
 
       type ('a, 'i, 'j, 'd, 'e) t = 'a M.t
     end)

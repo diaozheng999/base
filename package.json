@@ -1,0 +1,23 @@
+{
+  "name": "@nasi/js-base",
+  "description": "Fork of JaneStreet's Base for ReScript",
+  "scripts": {
+    "build": "bsb -make-world",
+    "clean": "bsb -clean-world"
+  },
+  "dependencies": {
+    "@nasi/js-base-shadow-stdlib": "file:shadow-stdlib",
+    "@nasi/js-sexplib0": "diaozheng999/sexplib0"
+  },
+  "devDependencies": {
+    "bs-platform": "^9.0.2",
+    "ppx-install": "^0.2.0"
+  },
+  "ppx": [
+    "@opam/ppx_sexp_conv",
+    "@opam/ppx_hash",
+    "@opam/ppx_compare",
+    "@opam/ppx_enumerate",
+    "@nasi/ppx-remove-deriving"
+  ]
+}

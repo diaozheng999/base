@@ -18,8 +18,8 @@ val of_int : int -> t option
 val to_int : t -> int option
 val of_int32 : int32 -> t
 val to_int32 : t -> int32
-val of_nativeint : nativeint -> t option
-val to_nativeint : t -> nativeint
+val of_nativeint : int32 -> t option
+val to_nativeint : t -> int32
 val of_int64 : int64 -> t option
 
 (** {3 Truncating conversions}
@@ -29,7 +29,7 @@ val of_int64 : int64 -> t option
 
 val of_int_trunc : int -> t
 val to_int_trunc : t -> int
-val of_nativeint_trunc : nativeint -> t
+val of_nativeint_trunc : int32 -> t
 val of_int64_trunc : int64 -> t
 
 (** {3 Low-level float conversions} *)

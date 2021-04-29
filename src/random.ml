@@ -27,7 +27,10 @@ let forbid_nondeterminism_in_tests ~allow_in_tests =
         "initializing Random with a nondeterministic seed is forbidden in inline tests")
 ;;
 
-external random_seed : unit -> int array = "caml_sys_random_seed"
+(* caml_sys_random_seed *)
+external random_seed : unit -> int array = "randomSeed"
+  [@@bs.module "@nasi/js-base-runtime"]
+  [@@bs.scope "random"]
 
 let random_seed ?allow_in_tests () =
   forbid_nondeterminism_in_tests ~allow_in_tests;
@@ -44,7 +47,7 @@ module State = struct
   let int t x = Caml.Random.State.int (Lazy.force t) x
   let int32 t x = Caml.Random.State.int32 (Lazy.force t) x
   let int64 t x = Caml.Random.State.int64 (Lazy.force t) x
-  let nativeint t x = Caml.Random.State.nativeint (Lazy.force t) x
+  let nativeint t x = Caml.Random.State.int32 (Lazy.force t) x
   let make seed = Lazy.from_val (Caml.Random.State.make seed)
   let copy t = Lazy.from_val (Caml.Random.State.copy (Lazy.force t))
   let char t = int t 256 |> Char.unsafe_of_int
@@ -138,11 +141,11 @@ module State = struct
   ;;
 
   let full_range_nativeint_on_64bits state =
-    Caml.Int64.to_nativeint (full_range_int64 state)
+    Caml.Int64.to_int32 (full_range_int64 state)
   ;;
 
   let full_range_nativeint_on_32bits state =
-    Caml.Nativeint.of_int32 (full_range_int32 state)
+    (full_range_int32 state)
   ;;
 
   let full_range_nativeint =
@@ -205,7 +208,7 @@ module State = struct
       let diff = sub hi lo in
       if diff = max_int
       then add lo (logand (full_range_nativeint state) max_int)
-      else if diff >= 0n
+      else if diff >= 0l
       then add lo (nativeint state (succ diff))
       else in_range state lo hi
   ;;
@@ -244,7 +247,7 @@ module State = struct
 
   let float_range state lo hi =
     let open Float_replace_polymorphic_compare in
-    if lo > hi then raise_crossed_bounds "float" lo hi Caml.string_of_float;
+    if lo > hi then raise_crossed_bounds "float" lo hi Js.Float.toString;
     lo +. float state (hi -. lo)
   ;;
 end

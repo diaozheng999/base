@@ -1,5 +1,7 @@
 open! Import
-include Result
+include (Result : module type of struct include Result end
+      with type ('a, 'e) t := ('a, 'e) result
+      and module Let_syntax := Result.Let_syntax)
 
 type 'a t = ('a, Error.t) Result.t
 [@@deriving_inline compare, equal, hash, sexp, sexp_grammar]

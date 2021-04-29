@@ -33,36 +33,39 @@ include (
       = "caml_ldexp_float" "caml_ldexp_float_unboxed"
     [@@noalloc]
 
-    external log10 : float -> float = "caml_log10_float" "log10" [@@unboxed] [@@noalloc]
+    external log10 : float -> float = "log10" [@@bs.val] [@@bs.scope "Math"]
 
     external expm1 : float -> float = "caml_expm1_float" "caml_expm1"
     [@@unboxed] [@@noalloc]
-
-    external log1p : float -> float = "caml_log1p_float" "caml_log1p"
-    [@@unboxed] [@@noalloc]
+    external log1p : float -> float = "log1p" [@@bs.val] [@@bs.scope "Math"]
 
     external copysign : float -> float -> float = "caml_copysign_float" "caml_copysign"
     [@@unboxed] [@@noalloc]
+    external cos : float -> float = "cos" [@@bs.val] [@@bs.scope "Math"]
 
-    external cos : float -> float = "caml_cos_float" "cos" [@@unboxed] [@@noalloc]
-    external sin : float -> float = "caml_sin_float" "sin" [@@unboxed] [@@noalloc]
-    external tan : float -> float = "caml_tan_float" "tan" [@@unboxed] [@@noalloc]
-    external acos : float -> float = "caml_acos_float" "acos" [@@unboxed] [@@noalloc]
-    external asin : float -> float = "caml_asin_float" "asin" [@@unboxed] [@@noalloc]
-    external atan : float -> float = "caml_atan_float" "atan" [@@unboxed] [@@noalloc]
-
-    external atan2 : float -> float -> float = "caml_atan2_float" "atan2"
-    [@@unboxed] [@@noalloc]
+    external sin : float -> float = "sin" [@@bs.val] [@@bs.scope "Math"]
+    
+    external tan : float -> float = "tan" [@@bs.val] [@@bs.scope "Math"]
+    
+    external acos : float -> float = "acos" [@@bs.val] [@@bs.scope "Math"]
+    
+    external asin : float -> float = "asin" [@@bs.val] [@@bs.scope "Math"]
+    
+    external atan : float -> float = "atan" [@@bs.val] [@@bs.scope "Math"]
+    
+    external atan2 : float -> float -> float = "atan2" [@@bs.val] [@@bs.scope "Math"]
 
     external hypot : float -> float -> float = "caml_hypot_float" "caml_hypot"
     [@@unboxed] [@@noalloc]
-
-    external cosh : float -> float = "caml_cosh_float" "cosh" [@@unboxed] [@@noalloc]
-    external sinh : float -> float = "caml_sinh_float" "sinh" [@@unboxed] [@@noalloc]
-    external tanh : float -> float = "caml_tanh_float" "tanh" [@@unboxed] [@@noalloc]
-    external sqrt : float -> float = "caml_sqrt_float" "sqrt" [@@unboxed] [@@noalloc]
-    external exp : float -> float = "caml_exp_float" "exp" [@@unboxed] [@@noalloc]
-    external log : float -> float = "caml_log_float" "log" [@@unboxed] [@@noalloc]
+    
+    external cosh : float -> float = "cosh" [@@bs.val] [@@bs.scope "Math"]
+    
+    external sinh : float -> float = "sinh" [@@bs.val] [@@bs.scope "Math"]
+    
+    external tanh : float -> float = "tanh" [@@bs.val] [@@bs.scope "Math"]
+    external sqrt : float -> float = "sqrt" [@@bs.val] [@@bs.scope "Math"]
+    external exp : float -> float = "exp" [@@bs.val] [@@bs.scope "Math"]
+    external log : float -> float = "log" [@@bs.val] [@@bs.scope "Math"]
   end)
 
 (* We need this indirection because these are exposed as "val" instead of "external" *)

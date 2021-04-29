@@ -23,7 +23,7 @@ module Make_gen (T : Arg) = struct
 end
 
 module Make (T : Indexable) = Make_gen (struct
-    include T
+    include (T : module type of struct include T end with type t := T.t and type elt := T.elt)
 
     type 'a elt = T.elt
     type 'a t = T.t

@@ -1,5 +1,7 @@
 (** Primitives for polymorphic compare. *)
 
+open Shadow
+
 (*_ Polymorphic compiler primitives can't be aliases as this doesn't play well with
   inlining. (If aliased without a type annotation, the compiler would implement them
   using the generic code doing a C call, and it's this code that would be inlined.) As a

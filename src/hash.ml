@@ -143,20 +143,11 @@ module Internalhash : sig
         and to allow optimizations for the immediate type. *)
      and type seed = Base_internalhash_types.seed
      and type hash_value = Base_internalhash_types.hash_value
-
-  external fold_int64 : state -> int64 -> state = "Base_internalhash_fold_int64"
-  [@@noalloc]
-
-  external fold_int : state -> int -> state = "Base_internalhash_fold_int" [@@noalloc]
-
-  external fold_float : state -> float -> state = "Base_internalhash_fold_float"
-  [@@noalloc]
-
-  external fold_string : state -> string -> state = "Base_internalhash_fold_string"
-  [@@noalloc]
-
-  external get_hash_value : state -> hash_value = "Base_internalhash_get_hash_value"
-  [@@noalloc]
+     external fold_int64     : state -> int64  -> state = "foldInt64"     [@@bs.module "@nasi/js-base-runtime"][@@bs.scope "internalHash"]
+     external fold_int       : state -> int    -> state = "foldInt"       [@@bs.module "@nasi/js-base-runtime"][@@bs.scope "internalHash"]
+     external fold_float     : state -> float  -> state = "foldFloat"      [@@bs.module "@nasi/js-base-runtime"][@@bs.scope "internalHash"]
+     external fold_string    : state -> string -> state = "foldString"     [@@bs.module "@nasi/js-base-runtime"][@@bs.scope "internalHash"]
+     external get_hash_value : state -> hash_value      = "getHashValue"  [@@bs.module "@nasi/js-base-runtime"][@@bs.scope "internalHash"]     
 end = struct
   let description = "internalhash"
 
@@ -214,7 +205,9 @@ module T = struct
 
     let hash_bool x = if x then 1 else 0
 
-    external hash_float : float -> int = "Base_hash_double" [@@noalloc]
+    external hash_float : float -> int = "hashFloat"
+      [@@bs.module "@nasi/js-base-runtime"]
+      [@@bs.scope "shadowLib"]
 
     let hash_unit () = 0
   end

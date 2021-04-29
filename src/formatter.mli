@@ -6,4 +6,4 @@
     alternatives for constructing pretty-printers using the [Format.formatter]
     type. *)
 
-type t = Caml.Format.formatter
+type t = Shadow.Caml.Format.formatter

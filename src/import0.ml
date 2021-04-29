@@ -1,24 +1,19 @@
 (* This module is included in [Import].  It is aimed at modules that define the standard
    combinators for [sexp_of], [of_sexp], [compare] and [hash] and are included in
    [Import]. *)
+open Shadow
 
 include (
   Shadow_stdlib :
     module type of struct
     include Shadow_stdlib
   end
-  with type 'a ref := 'a ref
-  with type ('a, 'b, 'c) format := ('a, 'b, 'c) format
-  with type ('a, 'b, 'c, 'd) format4 := ('a, 'b, 'c, 'd) format4
-  with type ('a, 'b, 'c, 'd, 'e, 'f) format6 := ('a, 'b, 'c, 'd, 'e, 'f) format6
   (* These modules are redefined in Base *)
   with module Array := Shadow_stdlib.Array
-  with module Atomic := Shadow_stdlib.Atomic
   with module Bool := Shadow_stdlib.Bool
   with module Buffer := Shadow_stdlib.Buffer
   with module Bytes := Shadow_stdlib.Bytes
   with module Char := Shadow_stdlib.Char
-  with module Either := Shadow_stdlib.Either
   with module Float := Shadow_stdlib.Float
   with module Hashtbl := Shadow_stdlib.Hashtbl
   with module Int := Shadow_stdlib.Int
@@ -57,15 +52,11 @@ module Caml = struct
 
   module Char = Caml.Char (** @canonical Caml.Char *)
 
-  module Ephemeron = Caml.Ephemeron (** @canonical Caml.Ephemeron *)
-
   module Float = Caml.Float (** @canonical Caml.Float *)
 
   module Format = Caml.Format (** @canonical Caml.Format *)
 
   module Fun = Caml.Fun (** @canonical Caml.Fun *)
-
-  module Gc = Caml.Gc (** @canonical Caml.Gc *)
 
   module Hashtbl = Caml.MoreLabels.Hashtbl (** @canonical Caml.MoreLabels.Hashtbl *)
 
@@ -297,9 +288,10 @@ module String_replace_polymorphic_compare = struct
 end
 
 module Bytes_replace_polymorphic_compare = struct
+
   let ( < ) (x : bytes) y = Poly.( < ) x y
   let ( <= ) (x : bytes) y = Poly.( <= ) x y
-  let ( <> ) (x : bytes) y = Poly.( <> ) x y
+  external ( <> ): bytes -> bytes -> bool = "%notequal"
   let ( = ) (x : bytes) y = Poly.( = ) x y
   let ( > ) (x : bytes) y = Poly.( > ) x y
   let ( >= ) (x : bytes) y = Poly.( >= ) x y
@@ -313,13 +305,13 @@ end
 
 (* This needs to be defined as an external so that the compiler can specialize it as a
    direct set or caml_modify *)
-external ( := ) : 'a ref -> 'a -> unit = "%setfield0"
+   external ( := ) : 'a ref -> 'a -> unit = "%bs_ref_setfield0"
 
-(* These need to be defined as an external otherwise the compiler won't unbox
-   references *)
-external ( ! ) : 'a ref -> 'a = "%field0"
-external ref : 'a -> 'a ref = "%makemutable"
-
+   (* These need to be defined as an external otherwise the compiler won't unbox
+      references *)
+   external ( ! ) : 'a ref -> 'a = "%bs_ref_field0"
+   external ref : 'a -> 'a ref = "%makemutable"
+   
 let ( @ ) = Caml.( @ )
 let ( ^ ) = Caml.( ^ )
 let ( ~- ) = Caml.( ~- )
@@ -353,6 +345,8 @@ let float_of_string = Caml.float_of_string
    as in [random.ml].  [am_testing] is implemented using [Base_am_testing], a weak C/js
    primitive that returns [false], but when linking an inline-test-runner executable, is
    overridden by another primitive that returns [true]. *)
-external am_testing : unit -> bool = "Base_am_testing"
+external am_testing : unit -> bool = "amTesting"
+    [@@bs.module "@nasi/js-base-runtime"]
+    [@@bs.scope "testing"]
 
 let am_testing = am_testing ()

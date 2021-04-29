@@ -30,7 +30,7 @@ module Builtin = struct
   let compare_int : int compare = Poly.compare
   let compare_int32 : int32 compare = Poly.compare
   let compare_int64 : int64 compare = Poly.compare
-  let compare_nativeint : nativeint compare = Poly.compare
+  let compare_nativeint : int32 compare = compare_int32
   let compare_string : string compare = Poly.compare
   let compare_unit : unit compare = Poly.compare
 
@@ -80,7 +80,7 @@ module Builtin = struct
   let equal_int : int equal = Poly.equal
   let equal_int32 : int32 equal = Poly.equal
   let equal_int64 : int64 equal = Poly.equal
-  let equal_nativeint : nativeint equal = Poly.equal
+  let equal_nativeint : int32 equal = Poly.equal
   let equal_string : string equal = Poly.equal
   let equal_unit : unit equal = Poly.equal
 

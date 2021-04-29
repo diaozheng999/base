@@ -40,7 +40,7 @@ sig
     -> 'a t Ppx_sexp_conv_lib.Sexp_grammar.t
 
   [@@@end]
-end)
+end with type 'a t := 'a ref)
 
 (* In the definition of [t], we do not have [[@@deriving compare, sexp]] because
    in general, syntax extensions tend to use the implementation when available rather than
@@ -49,8 +49,8 @@ end)
 type 'a t = 'a ref = { mutable contents : 'a }
 
 external create : 'a -> 'a t = "%makemutable"
-external ( ! ) : 'a t -> 'a = "%field0"
-external ( := ) : 'a t -> 'a -> unit = "%setfield0"
+external ( ! ) : 'a t -> 'a = "%bs_ref_field0"
+external ( := ) : 'a t -> 'a -> unit = "%bs_ref_setfield0"
 
 let swap t1 t2 =
   let tmp = !t1 in

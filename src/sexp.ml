@@ -1,8 +1,6 @@
 open Hash.Builtin
 open Ppx_compare_lib.Builtin
-module List = List0
-module String = String0
-include Sexplib0.Sexp
+include (Sexplib0.Sexp : module type of struct include Sexplib0.Sexp end with type t := Sexplib0.Sexp.t)
 
 (** Type of S-expressions *)
 type t = Sexplib0.Sexp.t =

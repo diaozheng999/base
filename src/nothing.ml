@@ -1,10 +1,10 @@
 open! Import
 
 module T = struct
-  type t = |
+  type t = Nothing
 
   let unreachable_code = function
-    | (_ : t) -> .
+    | (_ : t) -> [%raw "void 0"]
   ;;
 
   let all = []

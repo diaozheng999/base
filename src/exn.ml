@@ -139,7 +139,10 @@ let reraise_uncaught str func =
   | exn -> raise (Reraised (str, exn))
 ;;
 
-external clear_backtrace : unit -> unit = "Base_clear_caml_backtrace_pos" [@@noalloc]
+(* Base_clear_caml_backtrace_pos *)
+external clear_backtrace : unit -> unit = "clearBacktrace"
+  [@@bs.module "@nasi/js-base-runtime"]
+  [@@bs.scope "caml"]
 
 let raise_without_backtrace e =
   (* We clear the backtrace to reduce confusion, so that people don't think whatever

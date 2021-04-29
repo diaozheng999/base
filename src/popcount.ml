@@ -1,7 +1,10 @@
 open! Import
 
 (* C stub for int popcount to use the POPCNT instruction where possible *)
-external int_popcount : int -> int = "Base_int_math_int_popcount" [@@noalloc]
+(* Base_int_math_int_popcount *)
+external int_popcount : int -> int = "intPopcount"
+  [@@bs.module "@nasi/js-base-runtime"]
+  [@@bs.scope "popcount"]
 
 (* To maintain javascript compatibility and enable unboxing, we implement popcount in
    OCaml rather than use C stubs. Implementation adapted from:
@@ -38,9 +41,5 @@ let int32_popcount =
   fun [@inline] x -> int64_popcount (Caml.Int64.logand (Caml.Int64.of_int32 x) mask)
 ;;
 
-let nativeint_popcount =
-  match Caml.Nativeint.size with
-  | 32 -> fun [@inline] x -> int32_popcount (Caml.Nativeint.to_int32 x)
-  | 64 -> fun [@inline] x -> int64_popcount (Caml.Int64.of_nativeint x)
-  | _ -> assert false
+let nativeint_popcount = fun [@inline] x -> int32_popcount x
 ;;

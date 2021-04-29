@@ -3,7 +3,8 @@ open! Caml.Nativeint
 include Nativeint_replace_polymorphic_compare
 
 module T = struct
-  type t = nativeint [@@deriving_inline hash, sexp, sexp_grammar]
+  (* In ReScript NativeInt is 32-bit int *)
+  type t = int32 [@@deriving_inline hash, sexp, sexp_grammar]
 
   let (hash_fold_t : Ppx_hash_lib.Std.Hash.state -> t -> Ppx_hash_lib.Std.Hash.state) =
     hash_fold_nativeint
@@ -40,7 +41,7 @@ include Conv.Make (T)
 include Conv.Make_hex (struct
     open Nativeint_replace_polymorphic_compare
 
-    type t = nativeint [@@deriving_inline compare, hash]
+    type t = int32 [@@deriving_inline compare, hash]
 
     let compare = (compare_nativeint : t -> t -> int)
 
@@ -126,9 +127,9 @@ module Pow2 = struct
   let ( land ) = Caml.Nativeint.logand
 
   (** "ceiling power of 2" - Least power of 2 greater than or equal to x. *)
-  let ceil_pow2 (x : nativeint) =
-    if x <= 0n then non_positive_argument ();
-    let x = Caml.Nativeint.pred x in
+  let ceil_pow2 (x : int32) =
+    if x <= 0l then non_positive_argument ();
+    let x = Caml.Int32.pred x in
     let x = x lor (x lsr 1) in
     let x = x lor (x lsr 2) in
     let x = x lor (x lsr 4) in
@@ -137,24 +138,24 @@ module Pow2 = struct
     (* The next line is superfluous on 32-bit architectures, but it's faster to do it
        anyway than to branch *)
     let x = x lor (x lsr 32) in
-    Caml.Nativeint.succ x
+    Caml.Int32.succ x
   ;;
 
   (** "floor power of 2" - Largest power of 2 less than or equal to x. *)
   let floor_pow2 x =
-    if x <= 0n then non_positive_argument ();
+    if x <= 0l then non_positive_argument ();
     let x = x lor (x lsr 1) in
     let x = x lor (x lsr 2) in
     let x = x lor (x lsr 4) in
     let x = x lor (x lsr 8) in
     let x = x lor (x lsr 16) in
     let x = x lor (x lsr 32) in
-    Caml.Nativeint.sub x (x lsr 1)
+    Caml.Int32.sub x (x lsr 1)
   ;;
 
   let is_pow2 x =
-    if x <= 0n then non_positive_argument ();
-    x land Caml.Nativeint.pred x = 0n
+    if x <= 0l then non_positive_argument ();
+    x land Caml.Int32.pred x = 0l
   ;;
 
   (* C stubs for nativeint clz and ctz to use the CLZ/BSR/CTZ/BSF instruction where possible *)

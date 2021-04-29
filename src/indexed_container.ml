@@ -81,7 +81,7 @@ module Make (T : Make_arg) = struct
   let mem = C.mem
 
   include Make_gen (struct
-      include T
+      include (T : module type of struct include T end with type 'a t := 'a T.t)
 
       type 'a t = 'a T.t
       type 'a elt = 'a
@@ -95,7 +95,7 @@ module Make0 (T : Make0_arg) = struct
   let mem = C.mem
 
   include Make_gen (struct
-      include T
+      include (T : module type of struct include T end with type t := T.t)
 
       type 'a t = T.t
       type 'a elt = T.Elt.t

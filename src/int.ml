@@ -212,19 +212,23 @@ module Pow2 = struct
   ;;
 
   (* C stubs for int clz and ctz to use the CLZ/BSR/CTZ/BSF instruction where possible *)
+  (* Base_int_math_int_clz *)
   external clz
     :  (* Note that we pass the tagged int here. See int_math_stubs.c for details on why
           this is correct. *)
     int
     -> (int[@untagged])
-    = "Base_int_math_int_clz" "Base_int_math_int_clz_untagged"
-  [@@noalloc]
+    = "clz"
+  [@@bs.module "@nasi/js-base-runtime"]
+  [@@bs.scope "int"]
 
+  (* Base_int_math_int32_ctz *)
   external ctz
     :  (int[@untagged])
     -> (int[@untagged])
-    = "Base_int_math_int_ctz" "Base_int_math_int_ctz_untagged"
-  [@@noalloc]
+    = "ctz"
+  [@@bs.module "@nasi/js-base-runtime"]
+  [@@bs.scope "int"]
 
   (** Hacker's Delight Second Edition p106 *)
   let floor_log2 i =
@@ -278,7 +282,9 @@ module O = struct
 
   include F
 
-  external bswap16 : int -> int = "%bswap16"
+  external bswap16 : int -> int = "bswap16"
+    [@@bs.module "@nasi/js-base-runtime"]
+    [@@bs.scope "int"]
 
   (* These inlined versions of (%), (/%), and (//) perform better than their functorized
      counterparts in [F] (see benchmarks below).

@@ -1074,7 +1074,10 @@ end
    divergence is to expose the macro redefined in hash_stubs.c in the hash.h header of
    the OCaml compiler.) *)
 module Hash = struct
-  external hash : string -> int = "Base_hash_string" [@@noalloc]
+  (* Base_hash_string *)
+  external hash : string -> int = "hashString"
+    [@@bs.module "@nasi/js-base-runtime"]
+    [@@bs.scope "hash"]
 end
 
 (* [include Hash] to make the [external] version override the [hash] from

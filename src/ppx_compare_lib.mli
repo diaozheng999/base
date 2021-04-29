@@ -26,7 +26,7 @@ module Builtin : sig
   val compare_int : int compare
   val compare_int32 : int32 compare
   val compare_int64 : int64 compare
-  val compare_nativeint : nativeint compare
+  val compare_nativeint : int32 compare
   val compare_string : string compare
   val compare_unit : unit compare
   val compare_array : 'a compare -> 'a array compare
@@ -39,7 +39,7 @@ module Builtin : sig
   val equal_int : int equal
   val equal_int32 : int32 equal
   val equal_int64 : int64 equal
-  val equal_nativeint : nativeint equal
+  val equal_nativeint : int32 equal
   val equal_string : string equal
   val equal_unit : unit equal
   val equal_array : 'a equal -> 'a array equal

@@ -8,7 +8,8 @@ module Array = Array0
    tag, and will segfault if this property doesn't hold. *)
 type t = Caml.Obj.t array
 
-let invariant t = assert (Caml.Obj.tag (Caml.Obj.repr t) <> Caml.Obj.double_array_tag)
+(* Skip this invariant for now. We're not dealing with typed arrays yet. *)
+let invariant _t = assert (true)
 let length = Array.length
 let swap t i j = Array.swap t i j
 
@@ -25,7 +26,7 @@ let create_zero ~len = Array.create ~len zero_obj
 
 let create ~len x =
   (* If we can, use [Array.create] directly. *)
-  if Caml.Obj.tag x <> Caml.Obj.double_tag
+  if Js.typeof x == "number"
   then Array.create ~len x
   else (
     (* Otherwise use [create_zero] and set the contents *)
@@ -78,6 +79,8 @@ let[@inline always] unsafe_set_int_assuming_currently_int t i int =
   Array.unsafe_set (Caml.Obj.magic (t : t) : int array) i (Sys.opaque_identity int)
 ;;
 
+let unsafe_is_int obj = Js.typeof obj == "number"
+
 (* For [set] and [unsafe_set], if a pointer is involved, we first do a physical-equality
    test to see if the pointer is changing.  If not, we don't need to do the [set], which
    saves a call to [caml_modify].  We think this physical-equality test is worth it
@@ -88,7 +91,7 @@ let set t i obj =
   (* We use [get] first but then we use [Array.unsafe_set] since we know that [i] is
      valid. *)
   let old_obj = get t i in
-  if Caml.Obj.is_int old_obj && Caml.Obj.is_int obj
+  if unsafe_is_int old_obj && unsafe_is_int obj
   then unsafe_set_int_assuming_currently_int t i (Caml.Obj.obj obj : int)
   else if not (phys_equal old_obj obj)
   then unsafe_set_with_caml_modify t i obj
@@ -96,7 +99,7 @@ let set t i obj =
 
 let[@inline always] unsafe_set t i obj =
   let old_obj = unsafe_get t i in
-  if Caml.Obj.is_int old_obj && Caml.Obj.is_int obj
+  if unsafe_is_int old_obj && unsafe_is_int obj
   then unsafe_set_int_assuming_currently_int t i (Caml.Obj.obj obj : int)
   else if not (phys_equal old_obj obj)
   then unsafe_set_with_caml_modify t i obj
@@ -104,7 +107,7 @@ let[@inline always] unsafe_set t i obj =
 
 let[@inline always] unsafe_set_omit_phys_equal_check t i obj =
   let old_obj = unsafe_get t i in
-  if Caml.Obj.is_int old_obj && Caml.Obj.is_int obj
+  if unsafe_is_int old_obj && unsafe_is_int obj
   then unsafe_set_int_assuming_currently_int t i (Caml.Obj.obj obj : int)
   else unsafe_set_with_caml_modify t i obj
 ;;
@@ -113,7 +116,7 @@ let singleton obj = create ~len:1 obj
 
 (* Pre-condition: t.(i) is an integer. *)
 let unsafe_set_assuming_currently_int t i obj =
-  if Caml.Obj.is_int obj
+  if unsafe_is_int obj
   then unsafe_set_int_assuming_currently_int t i (Caml.Obj.obj obj : int)
   else
     (* [t.(i)] is an integer and [obj] is not, so we do not need to check if they are
@@ -123,14 +126,14 @@ let unsafe_set_assuming_currently_int t i obj =
 
 let unsafe_set_int t i int =
   let old_obj = unsafe_get t i in
-  if Caml.Obj.is_int old_obj
+  if unsafe_is_int old_obj
   then unsafe_set_int_assuming_currently_int t i int
   else unsafe_set_with_caml_modify t i (Caml.Obj.repr int)
 ;;
 
 let unsafe_clear_if_pointer t i =
   let old_obj = unsafe_get t i in
-  if not (Caml.Obj.is_int old_obj) then unsafe_set_with_caml_modify t i (Caml.Obj.repr 0)
+  if not (unsafe_is_int old_obj) then unsafe_set_with_caml_modify t i (Caml.Obj.repr 0)
 ;;
 
 (** [unsafe_blit] is like [Array.blit], except it uses our own for-loop to avoid

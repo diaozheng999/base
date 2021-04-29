@@ -441,8 +441,7 @@ val ldexp : t -> int -> t
 val frexp : t -> t * int
 
 (** Base 10 logarithm. *)
-external log10 : t -> t = "caml_log10_float" "log10"
-[@@unboxed] [@@noalloc]
+external log10 : float -> float = "log10" [@@bs.val] [@@bs.scope "Math"]
 
 (** [expm1 x] computes [exp x -. 1.0], giving numerically-accurate results even if [x] is
     close to [0.0]. *)
@@ -451,8 +450,7 @@ external expm1 : t -> t = "caml_expm1_float" "caml_expm1"
 
 (** [log1p x] computes [log(1.0 +. x)] (natural logarithm), giving numerically-accurate
     results even if [x] is close to [0.0]. *)
-external log1p : t -> t = "caml_log1p_float" "caml_log1p"
-[@@unboxed] [@@noalloc]
+external log1p : float -> float = "log1p" [@@bs.val] [@@bs.scope "Math"]
 
 (** [copysign x y] returns a float whose absolute value is that of [x] and whose sign is
     that of [y].  If [x] is [nan], returns [nan].  If [y] is [nan], returns either [x] or
@@ -461,36 +459,29 @@ external copysign : t -> t -> t = "caml_copysign_float" "caml_copysign"
 [@@unboxed] [@@noalloc]
 
 (** Cosine.  Argument is in radians. *)
-external cos : t -> t = "caml_cos_float" "cos"
-[@@unboxed] [@@noalloc]
+external cos : float -> float = "cos" [@@bs.val] [@@bs.scope "Math"]
 
 (** Sine.  Argument is in radians. *)
-external sin : t -> t = "caml_sin_float" "sin"
-[@@unboxed] [@@noalloc]
+external sin : float -> float = "sin" [@@bs.val] [@@bs.scope "Math"]
 
 (** Tangent.  Argument is in radians. *)
-external tan : t -> t = "caml_tan_float" "tan"
-[@@unboxed] [@@noalloc]
+external tan : float -> float = "tan" [@@bs.val] [@@bs.scope "Math"]
 
 (** Arc cosine.  The argument must fall within the range [[-1.0, 1.0]].  Result is in
     radians and is between [0.0] and [pi]. *)
-external acos : t -> t = "caml_acos_float" "acos"
-[@@unboxed] [@@noalloc]
+external acos : float -> float = "acos" [@@bs.val] [@@bs.scope "Math"]
 
 (** Arc sine.  The argument must fall within the range [[-1.0, 1.0]].  Result is in
     radians and is between [-pi/2] and [pi/2]. *)
-external asin : t -> t = "caml_asin_float" "asin"
-[@@unboxed] [@@noalloc]
+external asin : float -> float = "asin" [@@bs.val] [@@bs.scope "Math"]
 
 (** Arc tangent.  Result is in radians and is between [-pi/2] and [pi/2]. *)
-external atan : t -> t = "caml_atan_float" "atan"
-[@@unboxed] [@@noalloc]
+external atan : float -> float = "atan" [@@bs.val] [@@bs.scope "Math"]
 
 (** [atan2 y x] returns the arc tangent of [y /. x].  The signs of [x] and [y] are used to
     determine the quadrant of the result.  Result is in radians and is between [-pi] and
     [pi]. *)
-external atan2 : t -> t -> t = "caml_atan2_float" "atan2"
-[@@unboxed] [@@noalloc]
+external atan2 : float -> float -> float = "atan2" [@@bs.val] [@@bs.scope "Math"]
 
 (** [hypot x y] returns [sqrt(x *. x + y *. y)], that is, the length of the hypotenuse of
     a right-angled triangle with sides of length [x] and [y], or, equivalently, the
@@ -499,27 +490,22 @@ external hypot : t -> t -> t = "caml_hypot_float" "caml_hypot"
 [@@unboxed] [@@noalloc]
 
 (** Hyperbolic cosine.  Argument is in radians. *)
-external cosh : t -> t = "caml_cosh_float" "cosh"
-[@@unboxed] [@@noalloc]
+external cosh : float -> float = "cosh" [@@bs.val] [@@bs.scope "Math"]
 
 (** Hyperbolic sine.  Argument is in radians. *)
-external sinh : t -> t = "caml_sinh_float" "sinh"
-[@@unboxed] [@@noalloc]
+external sinh : float -> float = "sinh" [@@bs.val] [@@bs.scope "Math"]
 
 (** Hyperbolic tangent.  Argument is in radians. *)
-external tanh : t -> t = "caml_tanh_float" "tanh"
-[@@unboxed] [@@noalloc]
+external tanh : float -> float = "tanh" [@@bs.val] [@@bs.scope "Math"]
 
 (** Square root. *)
-external sqrt : t -> t = "caml_sqrt_float" "sqrt"
-[@@unboxed] [@@noalloc]
+external sqrt : float -> float = "sqrt" [@@bs.val] [@@bs.scope "Math"]
 
 (** Exponential. *)
-external exp : t -> t = "caml_exp_float" "exp" [@@unboxed] [@@noalloc]
+external exp : float -> float = "exp" [@@bs.val] [@@bs.scope "Math"]
 
 (** Natural logarithm. *)
-external log : t -> t = "caml_log_float" "log"
-[@@unboxed] [@@noalloc]
+external log : float -> float = "log" [@@bs.val] [@@bs.scope "Math"]
 
 (** Excluding nan the floating-point "number line" looks like:
     {v

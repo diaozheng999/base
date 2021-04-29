@@ -19,9 +19,7 @@ open! Import
 
 (** {2 Type and Interfaces} *)
 
-type 'a t = 'a option =
-  | None
-  | Some of 'a
+type 'a t = 'a option
 [@@deriving_inline compare, hash, sexp_grammar]
 
 val compare : ('a -> 'a -> int) -> 'a t -> 'a t -> int

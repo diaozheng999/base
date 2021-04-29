@@ -12,10 +12,10 @@ val to_int32 : t -> Int32.t option
 val to_int32_trunc : t -> Int32.t
 val of_int64 : Int64.t -> t option
 val of_int64_trunc : Int64.t -> t
-val of_nativeint : nativeint -> t option
-val to_nativeint : t -> nativeint option
-val of_nativeint_trunc : nativeint -> t
-val to_nativeint_trunc : t -> nativeint
+val of_nativeint : int32 -> t option
+val to_nativeint : t -> int32 option
+val of_nativeint_trunc : int32 -> t
+val to_nativeint_trunc : t -> int32
 val bswap16 : t -> t
 val bswap32 : t -> t
 val bswap48 : t -> t
