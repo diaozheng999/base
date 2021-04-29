@@ -7,10 +7,10 @@ module T = struct
   type t = int32 [@@deriving_inline hash, sexp, sexp_grammar]
 
   let (hash_fold_t : Ppx_hash_lib.Std.Hash.state -> t -> Ppx_hash_lib.Std.Hash.state) =
-    hash_fold_nativeint
+    hash_fold_int32
 
   and (hash : t -> Ppx_hash_lib.Std.Hash.hash_value) =
-    let func = hash_nativeint in
+    let func = hash_int32 in
     fun x -> func x
   ;;
 
@@ -46,10 +46,10 @@ include Conv.Make_hex (struct
     let compare = (compare_nativeint : t -> t -> int)
 
     let (hash_fold_t : Ppx_hash_lib.Std.Hash.state -> t -> Ppx_hash_lib.Std.Hash.state) =
-      hash_fold_nativeint
+      hash_fold_int32
 
     and (hash : t -> Ppx_hash_lib.Std.Hash.hash_value) =
-      let func = hash_nativeint in
+      let func = hash_int32 in
       fun x -> func x
     ;;
 
@@ -58,8 +58,8 @@ include Conv.Make_hex (struct
     let zero = zero
     let neg = neg
     let ( < ) = ( < )
-    let to_string i = Printf.sprintf "%nx" i
-    let of_string s = Caml.Scanf.sscanf s "%nx" Fn.id
+    let to_string i = Printf.sprintf "%lx" i
+    let of_string s = Caml.Scanf.sscanf s "%lx" Fn.id
     let module_name = "Base.Nativeint.Hex"
   end)
 
@@ -160,16 +160,18 @@ module Pow2 = struct
 
   (* C stubs for nativeint clz and ctz to use the CLZ/BSR/CTZ/BSF instruction where possible *)
   external clz
-    :  (nativeint[@unboxed])
+    :  (int32[@unboxed])
     -> (int[@untagged])
-    = "Base_int_math_nativeint_clz" "Base_int_math_nativeint_clz_unboxed"
-  [@@noalloc]
+    = "clz_int32"
+  [@@bs.module "@nasi/js-base-runtime"]
+  [@@bs.scope "int"]
 
   external ctz
-    :  (nativeint[@unboxed])
+    :  (int32[@unboxed])
     -> (int[@untagged])
-    = "Base_int_math_nativeint_ctz" "Base_int_math_nativeint_ctz_unboxed"
-  [@@noalloc]
+    = "ctz_int32"
+  [@@bs.module "@nasi/js-base-runtime"]
+  [@@bs.scope "int"]
 
   (** Hacker's Delight Second Edition p106 *)
   let floor_log2 i =

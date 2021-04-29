@@ -196,17 +196,21 @@ module Pow2 = struct
   ;;
 
   (* C stubs for int32 clz and ctz to use the CLZ/BSR/CTZ/BSF instruction where possible *)
+  (* Base_int_math_int32_clz *)
   external clz
     :  (int32[@unboxed])
     -> (int[@untagged])
-    = "Base_int_math_int32_clz" "Base_int_math_int32_clz_unboxed"
-  [@@noalloc]
+    = "clz_int32"
+  [@@bs.module "@nasi/js-base-runtime"]
+  [@@bs.scope "int"]
 
+  (* Base_int_math_int32_ctz *)
   external ctz
     :  (int32[@unboxed])
     -> (int[@untagged])
-    = "Base_int_math_int32_ctz" "Base_int_math_int32_ctz_unboxed"
-  [@@noalloc]
+    = "ctz_int32"
+  [@@bs.module "@nasi/js-base-runtime"]
+  [@@bs.scope "int"]
 
   (** Hacker's Delight Second Edition p106 *)
   let floor_log2 i =
