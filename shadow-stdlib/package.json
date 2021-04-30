@@ -1,3 +1,20 @@
 {
-  "name": "@nasi/js-base-shadow-stdlib"
+  "name": "@nasi/js-base-shadow-stdlib",
+  "version": "0.0.0-unstable.1",
+  "description": "Shadowing OCaml's 4.08.1 Stdlib in ReScript",
+  "repository": "github:diaozheng999/base",
+  "scripts": {
+    "build": "bsb -make-world",
+    "clean": "bsb -clean-world",
+    "prepack": "bsb -make-world"
+  },
+  "devDependencies": {
+    "bs-platform": "^9.0.1"
+  },
+  "files": [
+    "lib/js",
+    "src",
+    "bsconfig.json",
+    "package.json"
+  ]
 }

@@ -207,7 +207,7 @@ module T = struct
 
     external hash_float : float -> int = "hashFloat"
       [@@bs.module "@nasi/js-base-runtime"]
-      [@@bs.scope "shadowLib"]
+      [@@bs.scope "hash"]
 
     let hash_unit () = 0
   end
