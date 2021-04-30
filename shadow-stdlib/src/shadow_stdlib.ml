@@ -23,3 +23,4 @@ module String = String
 module Sys = Sys
 module Uchar = Uchar
 module Unit = Shadow_unit
+module Lexing = Lexing

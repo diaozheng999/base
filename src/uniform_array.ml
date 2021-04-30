@@ -1,5 +1,7 @@
 open! Import
 
+module Array = Array_base
+
 (* WARNING:
    We use non-memory-safe things throughout the [Trusted] module.
    Most of it is only safe in combination with the type signature (e.g. exposing

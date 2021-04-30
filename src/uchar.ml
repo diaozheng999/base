@@ -1,5 +1,7 @@
 open! Import
 
+module String = String_base
+
 let failwithf = Printf.failwithf
 
 module T = struct

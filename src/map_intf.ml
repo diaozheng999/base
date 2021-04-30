@@ -1905,8 +1905,8 @@ module type Map = sig
 
   type ('key, +'value, 'cmp) t
 
-  module Or_duplicate = Or_duplicate
-  module Continue_or_stop = Continue_or_stop
+  module Or_duplicate : module type of Or_duplicate
+  module Continue_or_stop : module type of Continue_or_stop
 
   module Finished_or_unfinished : sig
     type t = Finished_or_unfinished.t =
@@ -2694,9 +2694,9 @@ module type Map = sig
 
       For use in extensions of Base, like [Core_kernel]. *)
 
-  module With_comparator = With_comparator
-  module With_first_class_module = With_first_class_module
-  module Without_comparator = Without_comparator
+  module With_comparator : module type of With_comparator
+  module With_first_class_module : module type of With_first_class_module
+  module Without_comparator : module type of Without_comparator
 
   module type For_deriving = For_deriving
   module type S_poly = S_poly

@@ -13,7 +13,9 @@
 
 open! Import
 module List = List0
-include Map_intf
+include (
+  Map_intf : module type of struct include Map_intf end
+    with module Finished_or_unfinished := Map_intf.Finished_or_unfinished)
 
 module Finished_or_unfinished = struct
   include Map_intf.Finished_or_unfinished

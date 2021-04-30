@@ -19,7 +19,7 @@
     "@nasi/js-base-shadow-stdlib"
   ],
   "warnings": {
-    "number": "-44",
+    "number": "-44-60",
     "error" : "+101"
   },
   "ppx-flags": ["ppx-install"]

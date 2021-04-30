@@ -25,6 +25,8 @@
   pretty much inscrutable. *)
 (**/**)
 
+open Shadow
+
 (* The intent is to shadow all of INRIA's standard library.  Modules below would cause
    compilation errors without being removed from [Shadow_stdlib] before inclusion. *)
 
@@ -35,12 +37,12 @@ include (
   end
   (* Modules defined in Base *)
   with module Array := Shadow_stdlib.Array
-  with module Atomic := Shadow_stdlib.Atomic
+  (* with module Atomic := Shadow_stdlib.Atomic *)
   with module Bool := Shadow_stdlib.Bool
   with module Buffer := Shadow_stdlib.Buffer
   with module Bytes := Shadow_stdlib.Bytes
   with module Char := Shadow_stdlib.Char
-  with module Either := Shadow_stdlib.Either
+  (* with module Either := Shadow_stdlib.Either *)
   with module Float := Shadow_stdlib.Float
   with module Hashtbl := Shadow_stdlib.Hashtbl
   with module Int := Shadow_stdlib.Int
@@ -62,17 +64,12 @@ include (
   with module Uchar := Shadow_stdlib.Uchar
   with module Unit := Shadow_stdlib.Unit
   (* Support for generated lexers *)
-  with module Lexing := Shadow_stdlib.Lexing
-  with type ('a, 'b, 'c) format := ('a, 'b, 'c) format
-  with type ('a, 'b, 'c, 'd) format4 := ('a, 'b, 'c, 'd) format4
-  with type ('a, 'b, 'c, 'd, 'e, 'f) format6 := ('a, 'b, 'c, 'd, 'e, 'f) format6
-  with type 'a ref := 'a ref) [@ocaml.warning "-3"]
-
+  with module Lexing := Shadow_stdlib.Lexing)
 (**/**)
 
 open! Import
 module Applicative = Applicative
-module Array = Array
+module Array = Array_base
 module Avltree = Avltree
 module Backtrace = Backtrace
 module Binary_search = Binary_search
@@ -130,7 +127,7 @@ module Popcount = Popcount
 [@@deprecated "[since 2018-10] use [popcount] functions in the individual int modules"]
 
 module Pretty_printer = Pretty_printer
-module Printf = Printf_base
+module Printf = Printf
 module Linked_queue = Linked_queue
 module Queue = Queue
 module Random = Random
@@ -144,7 +141,7 @@ module Sign_or_nan = Sign_or_nan
 module Source_code_position = Source_code_position
 module Stack = Stack
 module Staged = Staged
-module String = String
+module String = String_base
 module Stringable = Stringable
 module Sys = Sys
 module T = T

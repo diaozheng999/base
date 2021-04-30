@@ -1,5 +1,6 @@
 open! Import
 
+module Array = Array_base
 
 (* [t] stores the [t.length] queue elements at consecutive increasing indices of [t.elts],
    mod the capacity of [t], which is [Option_array.length t.elts].  The capacity is

@@ -16,9 +16,6 @@ open! Import
       through the module signature then it could decide to construct a float
       array instead. *)
 module Cheap_option = struct
-  (* This is taken from core_kernel. Rather than expose it in the public
-     interface of base, just keep a copy around here. *)
-  let phys_same (type a b) (a : a) (b : b) = phys_equal a (Caml.Obj.magic b : a)
 
   module T0 : sig
     type 'a t
@@ -41,9 +38,8 @@ module Cheap_option = struct
 
        this code is duplicated in Moption, and if we find yet another place where we want
        it we should reconsider making it shared. *)
-    let none_substitute : _ t = Caml.Obj.obj (Caml.Obj.new_block Caml.Obj.abstract_tag 1)
 
-    let none : _ t =
+    let none_substitute : _ t =
       (* The number was produced by
          [< /dev/urandom tr -c -d '1234567890abcdef' | head -c 16].
 
@@ -55,18 +51,22 @@ module Cheap_option = struct
          y] is not a pointer if [c] is an integer compile-time constant.  This is being
          fixed in https://github.com/ocaml/ocaml/pull/555.  The "memory corruption" test
          below demonstrates the issue.  *)
-      Caml.Obj.magic `x6e8ee3478e1d7449
+      Caml.Obj.magic 0x6e8ee347
     ;;
 
-    let is_none x = phys_equal x none
-    let is_some x = not (phys_equal x none)
+    external none : _ t = "undefined" [@@bs.val]
+
+    let is_none x = x == none
+    let is_some x = x != none
+
+    let [@warning "-27"] unsafe_is_none x = [%raw "x === undefined"]
 
     let some (type a) (x : a) : a t =
-      if phys_same x none then none_substitute else Caml.Obj.magic x
+      if unsafe_is_none x then none else Caml.Obj.magic x
     ;;
 
     let value_unsafe (type a) (x : a t) : a =
-      if phys_equal x none_substitute then Caml.Obj.magic none else Caml.Obj.magic x
+      if x == none_substitute then Caml.Obj.magic none else Caml.Obj.magic x
     ;;
 
     let value_exn x =

@@ -291,7 +291,7 @@ module Bytes_replace_polymorphic_compare = struct
 
   let ( < ) (x : bytes) y = Poly.( < ) x y
   let ( <= ) (x : bytes) y = Poly.( <= ) x y
-  external ( <> ): bytes -> bytes -> bool = "%notequal"
+  let ( <> ) (x : bytes) y = not (Poly.( x = y ))
   let ( = ) (x : bytes) y = Poly.( = ) x y
   let ( > ) (x : bytes) y = Poly.( > ) x y
   let ( >= ) (x : bytes) y = Poly.( >= ) x y
