@@ -578,9 +578,9 @@ module Export = struct
 
   (* Declared as an externals so that the compiler skips the caml_modify when possible and
      to keep reference unboxing working *)
-  external ( ! ) : 'a ref -> 'a = "%field0"
+  external ( ! ) : 'a ref -> 'a = "%bs_ref_field0"
   external ref : 'a -> 'a ref = "%makemutable"
-  external ( := ) : 'a ref -> 'a -> unit = "%setfield0"
+  external ( := ) : 'a ref -> 'a -> unit = "%bs_ref_setfield0"
 
   (** Pair operations *)
 
