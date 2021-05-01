@@ -149,7 +149,7 @@ module Int_replace_polymorphic_compare = struct
   external ( = ) : int -> int -> bool = "%eq"
   external ( > ) : int -> int -> bool = "%greaterthan"
   external ( >= ) : int -> int -> bool = "%greaterequal"
-  external compare  int -> int -> int = "%compare"
+  external compare : int -> int -> int = "%compare"
   external ascending : int -> int -> int = "%compare"
   let descending (x : int) y = compare y x
   external equal : int -> int -> bool = "%eq"
