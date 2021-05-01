@@ -15,6 +15,11 @@
     "bs-platform": "^9.0.2",
     "ppx-install": "^0.2.0"
   },
+  "files": [
+    "src",
+    "lib/js",
+    "bsconfig.json"
+  ],
   "ppx": [
     "@opam/ppx_sexp_conv",
     "@opam/ppx_hash",
