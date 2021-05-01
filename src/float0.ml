@@ -5,19 +5,20 @@ open! Import
    functions are available within this module. *)
 open! Float_replace_polymorphic_compare
 
-let ceil = Caml.ceil
-let floor = Caml.floor
-let mod_float = Caml.mod_float
-let modf = Caml.modf
-let float_of_string = Caml.float_of_string
+external ceil : float -> float = "ceil" [@@bs.val] [@@bs.scope "Math"]
+external floor : float -> float = "floor" [@@bs.val] [@@bs.scope "Math"]
+external mod_float : float -> float -> float = "caml_fmod_float" "fmod"
+  [@@unboxed] [@@noalloc]
+external modf : float -> float * float = "caml_modf_float"
+external float_of_string : string -> float = "parseFloat" [@@bs.val]
 let nan = Caml.nan
 let infinity = Caml.infinity
 let neg_infinity = Caml.neg_infinity
 let max_finite_value = Caml.max_float
 let epsilon_float = Caml.epsilon_float
 let classify_float = Caml.classify_float
-let abs_float = Caml.abs_float
-let ( ** ) = Caml.( ** )
+external abs_float : float -> float = "abs"[@@bs.val] [@@bs.scope "Math"]
+external ( ** ) : float -> float -> float = "pow" [@@bs.val] [@@bs.scope "Math"]
 
 (* The bits of INRIA's [Pervasives] that we just want to expose in [Float]. Most are
    already deprecated in [Pervasives], and eventually all of them should be. *)

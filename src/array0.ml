@@ -46,9 +46,12 @@ let to_list = Caml.Array.to_list
    conventions. *)
 let fold t ~init ~f = Caml.Array.fold_left t ~init ~f
 let fold_right t ~f ~init = Caml.Array.fold_right t ~f ~init
-let iter t ~f = Caml.Array.iter t ~f
-let iteri t ~f = Caml.Array.iteri t ~f
-let map t ~f = Caml.Array.map t ~f
+
+external iter : 'a array -> f:('a -> unit [@bs.uncurry]) -> unit = "forEach" [@@bs.send]
+external%private iter_: 'a array -> f:('a -> int -> unit [@bs]) -> unit = "forEach" [@@bs.send]
+let iteri t ~f = iter_ t ~f:(fun [@bs] a i -> f i a)
+
+external map : 'a array -> f:('a -> 'b [@bs.uncurry]) -> 'b array = "map" [@@bs.send]
 let mapi t ~f = Caml.Array.mapi t ~f
 let stable_sort t ~compare = Caml.Array.stable_sort t ~cmp:compare
 

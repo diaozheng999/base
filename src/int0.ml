@@ -16,10 +16,11 @@
 
 open Shadow
 
-let to_string = Caml.string_of_int
-let of_string = Caml.int_of_string
-let to_float = Caml.float_of_int
-let of_float = Caml.int_of_float
+external to_string : int -> string = "toString" [@@bs.send]
+external of_string : string -> int = "parseInt" [@@bs.val]
+external to_float : int -> float = "%identity"
+
+external of_float: float -> int = "%intoffloat"
 let max_value = Caml.max_int
 let min_value = Caml.min_int
-let succ = Caml.succ
+external succ : int -> int = "%succint"

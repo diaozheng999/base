@@ -129,49 +129,49 @@ let bool_to_int (x : bool) : int = Caml.Obj.magic x
 (* This need to be declared as an external for the warnings to work properly *)
 external ignore : _ -> unit = "%ignore"
 
-let ( != ) = Caml.( != )
-let ( * ) = Caml.( * )
-let ( ** ) = Caml.( ** )
-let ( *. ) = Caml.( *. )
-let ( + ) = Caml.( + )
-let ( +. ) = Caml.( +. )
-let ( - ) = Caml.( - )
-let ( -. ) = Caml.( -. )
-let ( / ) = Caml.( / )
-let ( /. ) = Caml.( /. )
+external ( != ) : 'a -> 'a -> bool = "%noteq"
+external ( * ) : int -> int -> int = "%mulint"
+external ( ** ) : float -> float -> float = "pow" [@@bs.val] [@@bs.scope "Math"]
+external ( *. ) : float -> float -> float = "%mulfloat"
+external ( + ) : int -> int -> int = "%addint"
+external ( +. ) : float -> float -> float = "%addfloat"
+external ( - ) : int -> int -> int = "%subint"
+external ( -. ) : float -> float -> float = "%subfloat"
+external ( / ) : int -> int -> int = "%divint"
+external ( /. ) : float -> float -> float = "%divfloat"
 
 module Poly = Poly0 (** @canonical Base.Poly *)
 
 module Int_replace_polymorphic_compare = struct
-  let ( < ) (x : int) y = Poly.( < ) x y
-  let ( <= ) (x : int) y = Poly.( <= ) x y
-  let ( <> ) (x : int) y = Poly.( <> ) x y
-  let ( = ) (x : int) y = Poly.( = ) x y
-  let ( > ) (x : int) y = Poly.( > ) x y
-  let ( >= ) (x : int) y = Poly.( >= ) x y
-  let compare (x : int) y = bool_to_int (x > y) - bool_to_int (x < y)
-  let ascending (x : int) y = compare x y
+  external ( < ) : int -> int -> bool = "%lessthan"
+  external ( <= ) : int -> int -> bool = "%lessequal"
+  external ( <> ) : int -> int -> bool = "%noteq"
+  external ( = ) : int -> int -> bool = "%eq"
+  external ( > ) : int -> int -> bool = "%greaterthan"
+  external ( >= ) : int -> int -> bool = "%greaterequal"
+  external compare  int -> int -> int = "%compare"
+  external ascending : int -> int -> int = "%compare"
   let descending (x : int) y = compare y x
-  let equal (x : int) y = Poly.equal x y
-  let max (x : int) y = if x >= y then x else y
-  let min (x : int) y = if x <= y then x else y
+  external equal : int -> int -> bool = "%eq"
+  external max : int -> int -> int = "max" [@@bs.val] [@@bs.scope "Math"]
+  external min : int -> int -> int = "min" [@@bs.val] [@@bs.scope "Math"]
 end
 
 include Int_replace_polymorphic_compare
 
 module Int32_replace_polymorphic_compare = struct
-  let ( < ) (x : Caml.Int32.t) y = Poly.( < ) x y
-  let ( <= ) (x : Caml.Int32.t) y = Poly.( <= ) x y
-  let ( <> ) (x : Caml.Int32.t) y = Poly.( <> ) x y
-  let ( = ) (x : Caml.Int32.t) y = Poly.( = ) x y
-  let ( > ) (x : Caml.Int32.t) y = Poly.( > ) x y
-  let ( >= ) (x : Caml.Int32.t) y = Poly.( >= ) x y
-  let ascending (x : Caml.Int32.t) y = Poly.ascending x y
+  external ( < ) : int32 -> int32 -> bool = "%lessthan"
+  external ( <= ) : int32 -> int32 -> bool = "%lessequal"
+  external ( <> ) : int32 -> int32 -> bool = "%noteq"
+  external ( = ) : int32 -> int32 -> bool = "%eq"
+  external ( > ) : int32 -> int32 -> bool = "%greaterthan"
+  external ( >= ) : int32 -> int32 -> bool = "%greaterequal"
+  external compare : int32 -> int32 -> int = "%compare"
+  external ascending : int32 -> int32 -> int = "%compare"
   let descending (x : Caml.Int32.t) y = Poly.descending x y
-  let compare (x : Caml.Int32.t) y = Poly.compare x y
-  let equal (x : Caml.Int32.t) y = Poly.equal x y
-  let max (x : Caml.Int32.t) y = if x >= y then x else y
-  let min (x : Caml.Int32.t) y = if x <= y then x else y
+  external equal : int32 -> int32 -> bool = "%eq"
+  external max : int32 -> int32 -> int = "max" [@@bs.val] [@@bs.scope "Math"]
+  external min : int32 -> int32 -> int = "min" [@@bs.val] [@@bs.scope "Math"]
 end
 
 module Int64_replace_polymorphic_compare = struct
@@ -190,12 +190,12 @@ module Int64_replace_polymorphic_compare = struct
 end
 
 module Nativeint_replace_polymorphic_compare = struct
-  let ( < ) (x : Caml.Nativeint.t) y = Poly.( < ) x y
-  let ( <= ) (x : Caml.Nativeint.t) y = Poly.( <= ) x y
-  let ( <> ) (x : Caml.Nativeint.t) y = Poly.( <> ) x y
-  let ( = ) (x : Caml.Nativeint.t) y = Poly.( = ) x y
-  let ( > ) (x : Caml.Nativeint.t) y = Poly.( > ) x y
-  let ( >= ) (x : Caml.Nativeint.t) y = Poly.( >= ) x y
+  external ( < ) : Caml.Nativeint.t -> Caml.Nativeint.t -> bool = "%lessthan"
+  external ( <= ) : Caml.Nativeint.t -> Caml.Nativeint.t -> bool = "%lessequal"
+  external ( <> ) : Caml.Nativeint.t -> Caml.Nativeint.t -> bool = "%noteq"
+  external ( = ) : Caml.Nativeint.t -> Caml.Nativeint.t -> bool = "%eq"
+  external ( > ) : Caml.Nativeint.t -> Caml.Nativeint.t -> bool = "%greaterthan"
+  external ( >= ) : Caml.Nativeint.t -> Caml.Nativeint.t -> bool = "%greaterequal"
   let ascending (x : Caml.Nativeint.t) y = Poly.ascending x y
   let descending (x : Caml.Nativeint.t) y = Poly.descending x y
   let compare (x : Caml.Nativeint.t) y = Poly.compare x y
@@ -205,16 +205,16 @@ module Nativeint_replace_polymorphic_compare = struct
 end
 
 module Bool_replace_polymorphic_compare = struct
-  let ( < ) (x : bool) y = Poly.( < ) x y
-  let ( <= ) (x : bool) y = Poly.( <= ) x y
-  let ( <> ) (x : bool) y = Poly.( <> ) x y
-  let ( = ) (x : bool) y = Poly.( = ) x y
-  let ( > ) (x : bool) y = Poly.( > ) x y
-  let ( >= ) (x : bool) y = Poly.( >= ) x y
-  let ascending (x : bool) y = Poly.ascending x y
+  external ( < ) : bool -> bool -> bool = "%lessthan"
+  external ( <= ) : bool -> bool -> bool = "%lessequal"
+  external ( <> ) : bool -> bool -> bool = "%noteq"
+  external ( = ) : bool -> bool -> bool = "%eq"
+  external ( > ) : bool -> bool -> bool = "%greaterthan"
+  external ( >= ) : bool -> bool -> bool = "%greaterequal"
+  external ascending : bool -> bool -> int = "%compare"
   let descending (x : bool) y = Poly.descending x y
-  let compare (x : bool) y = Poly.compare x y
-  let equal (x : bool) y = Poly.equal x y
+  external compare : bool -> bool -> int = "%compare"
+  external equal : bool -> bool -> bool = "%equal"
   let max (x : bool) y = if x >= y then x else y
   let min (x : bool) y = if x <= y then x else y
 end
@@ -235,13 +235,15 @@ module Char_replace_polymorphic_compare = struct
 end
 
 module Uchar_replace_polymorphic_compare = struct
-  let i x = Caml.Uchar.to_int x
-  let ( < ) (x : Caml.Uchar.t) y = Int_replace_polymorphic_compare.( < ) (i x) (i y)
-  let ( <= ) (x : Caml.Uchar.t) y = Int_replace_polymorphic_compare.( <= ) (i x) (i y)
-  let ( <> ) (x : Caml.Uchar.t) y = Int_replace_polymorphic_compare.( <> ) (i x) (i y)
-  let ( = ) (x : Caml.Uchar.t) y = Int_replace_polymorphic_compare.( = ) (i x) (i y)
-  let ( > ) (x : Caml.Uchar.t) y = Int_replace_polymorphic_compare.( > ) (i x) (i y)
-  let ( >= ) (x : Caml.Uchar.t) y = Int_replace_polymorphic_compare.( >= ) (i x) (i y)
+
+  (* Here, we bank on the fact that the JS representation of Uchar is number. *)
+  external i: Caml.Uchar.t -> int = "%identity"
+  external ( < ) : Caml.Uchar.t -> Caml.Uchar.t -> bool = "%lessthan"
+  external ( <= ) : Caml.Uchar.t -> Caml.Uchar.t -> bool = "%lessequal"
+  external ( <> ) : Caml.Uchar.t -> Caml.Uchar.t -> bool = "%noteq"
+  external ( = ) : Caml.Uchar.t -> Caml.Uchar.t -> bool = "%eq"
+  external ( > ) : Caml.Uchar.t -> Caml.Uchar.t -> bool = "%greaterthan"
+  external ( >= ) : Caml.Uchar.t -> Caml.Uchar.t -> bool = "%greaterequal"
 
   let ascending (x : Caml.Uchar.t) y =
     Int_replace_polymorphic_compare.ascending (i x) (i y)
@@ -258,27 +260,27 @@ module Uchar_replace_polymorphic_compare = struct
 end
 
 module Float_replace_polymorphic_compare = struct
-  let ( < ) (x : float) y = Poly.( < ) x y
-  let ( <= ) (x : float) y = Poly.( <= ) x y
-  let ( <> ) (x : float) y = Poly.( <> ) x y
-  let ( = ) (x : float) y = Poly.( = ) x y
-  let ( > ) (x : float) y = Poly.( > ) x y
-  let ( >= ) (x : float) y = Poly.( >= ) x y
-  let ascending (x : float) y = Poly.ascending x y
+  external ( < ) : float -> float -> bool = "%lessthan"
+  external ( <= ) : float -> float -> bool = "%lessequal"
+  external ( <> ) : float -> float -> bool = "%noteq"
+  external ( = ) : float -> float -> bool = "%eq"
+  external ( > ) : float -> float -> bool = "%greaterthan"
+  external ( >= ) : float -> float -> bool = "%greaterequal"
+  external ascending : float -> float -> int = "%compare"
   let descending (x : float) y = Poly.descending x y
-  let compare (x : float) y = Poly.compare x y
-  let equal (x : float) y = Poly.equal x y
+  external compare : float -> float -> int = "%compare"
+  external equal : 'a -> 'a -> bool = "%eq"
   let max (x : float) y = if x >= y then x else y
   let min (x : float) y = if x <= y then x else y
 end
 
 module String_replace_polymorphic_compare = struct
-  let ( < ) (x : string) y = Poly.( < ) x y
-  let ( <= ) (x : string) y = Poly.( <= ) x y
-  let ( <> ) (x : string) y = Poly.( <> ) x y
-  let ( = ) (x : string) y = Poly.( = ) x y
-  let ( > ) (x : string) y = Poly.( > ) x y
-  let ( >= ) (x : string) y = Poly.( >= ) x y
+  external ( < ) : string -> string -> bool = "%lessthan"
+  external ( <= ) : string -> string -> bool = "%lessequal"
+  external ( <> ) : string -> string -> bool = "%noteq"
+  external ( = ) : string -> string -> bool = "%eq"
+  external ( > ) : string -> string -> bool = "%greaterthan"
+  external ( >= ) : string -> string -> bool = "%greaterequal"
   let ascending (x : string) y = Poly.ascending x y
   let descending (x : string) y = Poly.descending x y
   let compare (x : string) y = Poly.compare x y
@@ -314,32 +316,33 @@ end
    
 let ( @ ) = Caml.( @ )
 let ( ^ ) = Caml.( ^ )
-let ( ~- ) = Caml.( ~- )
-let ( ~-. ) = Caml.( ~-. )
-let ( asr ) = Caml.( asr )
-let ( land ) = Caml.( land )
+external ( ~- ) : int -> int = "%negint"
+external ( ~-. ) : float -> float = "%negfloat"
+external ( asr ) : int -> int -> int = "%asrint"
+external ( land ) : int -> int -> int = "%andint"
 let lnot = Caml.lnot
-let ( lor ) = Caml.( lor )
-let ( lsl ) = Caml.( lsl )
-let ( lsr ) = Caml.( lsr )
-let ( lxor ) = Caml.( lxor )
-let ( mod ) = Caml.( mod )
+external ( lor ) : int -> int -> int = "%orint"
+external ( lsl ) : int -> int -> int = "%lslint"
+external ( lsr ) : int -> int -> int = "%lsrint"
+external ( lxor ) : int -> int -> int = "%xorint"
+external ( mod ) : int -> int -> int = "%modint"
 let abs = Caml.abs
 let failwith = Caml.failwith
-let fst = Caml.fst
+external fst : 'a * 'b -> 'a = "%field0"
 let invalid_arg = Caml.invalid_arg
-let snd = Caml.snd
+external snd : 'a * 'b -> 'b = "%field1"
 
 (* [raise] needs to be defined as an external as the compiler automatically replaces
    '%raise' by '%reraise' when appropriate. *)
 external raise : exn -> _ = "%raise"
 
-let phys_equal = Caml.( == )
-let decr = Caml.decr
-let incr = Caml.incr
+external phys_equal : 'a -> 'a -> bool = "%eq"
+
+external incr : int ref -> unit = "%incr"
+external decr : int ref -> unit = "%decr"
 
 (* used by sexp_conv, which float0 depends on through option *)
-let float_of_string = Caml.float_of_string
+external float_of_string : string -> float = "parseFloat" [@@bs.val]
 
 (* [am_testing] is used in a few places to behave differently when in testing mode, such
    as in [random.ml].  [am_testing] is implemented using [Base_am_testing], a weak C/js
