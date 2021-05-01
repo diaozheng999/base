@@ -146,7 +146,7 @@ let to_nativeint_exn = to_nativeint
 let pow b e = of_int_exn (Int_math.Private.int_pow (to_int_exn b) (to_int_exn e))
 let ( ** ) b e = pow b e
 
-external bswap32 : t -> t = "bswap_int32"
+external bswap32 : t -> t = "bswap32"
   [@@bs.module "@nasi/js-base-runtime"]
   [@@bs.scope "int"]
 

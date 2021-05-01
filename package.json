@@ -7,8 +7,9 @@
     "clean": "bsb -clean-world"
   },
   "dependencies": {
-    "@nasi/js-base-shadow-stdlib": "0.0.0-unstable.1",
-    "@nasi/js-sexplib0": "0.0.0-unstable.1"
+    "@nasi/js-base-shadow-stdlib": "^0.0.0-unstable.1",
+    "@nasi/js-sexplib0": "^0.0.0-unstable.1",
+    "@nasi/js-base-runtime": "^0.0.0-unstable.1"
   },
   "devDependencies": {
     "bs-platform": "^9.0.2",

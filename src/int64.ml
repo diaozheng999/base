@@ -68,7 +68,7 @@ let of_float f =
 
 let ( ** ) b e = pow b e
 
-external bswap64 : t -> t = "bswap_int64"
+external bswap64 : t -> t = "bswap64"
   [@@bs.module "@nasi/js-base-runtime"]
   [@@bs.scope "int"]
 

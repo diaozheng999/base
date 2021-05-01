@@ -2,9 +2,8 @@ import {
   caml_hash_mix_int,
   caml_hash_mix_string,
   caml_hash_mix_final,
-} from "bs-platform/lib/js/caml_hash_primitive";
-
-type int64 = [number, number]
+} from "@rescript/std/lib/js/caml_hash_primitive";
+import { int64 } from "./int64";
 
 export const foldInt = caml_hash_mix_int;
 

@@ -297,6 +297,6 @@ include O
    this module. *)
 include Nativeint_replace_polymorphic_compare
 
-external bswap : t -> t = "bswap_int32"
+external bswap : t -> t = "bswap32"
   [@@bs.module "@nasi/js-base-runtime"]
   [@@bs.scope "int"]

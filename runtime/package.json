@@ -3,15 +3,11 @@
   "description": "Collected runtime libraries for Jane Street's Base",
   "version": "0.0.0-unstable.1",
   "dependencies": {
-    "bs-platform": "^9.0.2"
+    "@rescript/std": "^9.1.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.26.0",
-    "@types/md5": "^2.3.0",
-    "@types/node": "^10.17.58",
     "@typescript-eslint/eslint-plugin": "^4.9.0",
     "@typescript-eslint/parser": "^4.9.0",
-    "copyfiles": "^2.4.1",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.22.0",
@@ -21,19 +17,20 @@
     "typescript": "^4.2.4"
   },
   "files": [
-    "/bin",
-    "/lib"
+    "/lib",
+    "tsconfig.json"
   ],
-  "homepage": "https://github.com/diaozheng999/ppx-install",
+  "homepage": "https://github.com/diaozheng999/base",
   "keywords": [
-    "oclif"
+    "rescript"
   ],
   "license": "MIT",
   "main": "lib/index.js",
   "repository": "diaozheng999/base",
   "scripts": {
     "lint": "eslint . --ext .ts",
-    "prepack": "tsc -b"
+    "prepack": "tsc -b",
+    "build": "tsc"
   },
   "types": "lib/index.d.ts"
 }
