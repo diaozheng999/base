@@ -7,11 +7,11 @@ let overflow () = Printf.invalid_argf "integer overflow in pow" ()
 (* To implement [int64_pow], we use C code rather than OCaml to eliminate allocation. *)
 (* Base_int_math_int_pow_stub *)
 external int_math_int_pow : int -> int -> int = "pow"
-  [@@bs.module "@nasi/js-core-runtime"]
+  [@@bs.module "@nasi/js-base-runtime"]
   [@@bs.scope "int"]
 (* Base_int_math_int64_pow_stub *)
 external int_math_int64_pow : int64 -> int64 -> int64 = "pow_int64"
-  [@@bs.module "@nasi/js-core-runtime"]
+  [@@bs.module "@nasi/js-base-runtime"]
   [@@bs.scope "int"]
 
 let int_pow base exponent =

@@ -1,7 +1,7 @@
 {
   "name": "@nasi/js-base",
   "namespace": "base",
-  "version": "0.0.0-unstable.4",
+  "version": "0.0.0-unstable.5",
   "sources": {
     "dir" : "src",
     "subdirs" : true
