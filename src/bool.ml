@@ -67,7 +67,7 @@ let clamp t ~min ~max =
   else Ok (clamp_unchecked t ~min ~max)
 ;;
 
-let to_int x = bool_to_int x
+external to_int : t -> int = "Number" [@@bs.val]
 
 module Non_short_circuiting = struct
   (* We don't expose this, since we don't want to break the invariant mentioned below of

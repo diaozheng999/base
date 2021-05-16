@@ -19,7 +19,7 @@ include Invariant.S with type t := t
 (**
    - [to_int true = 1]
    - [to_int false = 0] *)
-val to_int : t -> int
+external to_int : t -> int = "Number" [@@bs.val]
 
 module Non_short_circuiting : sig
   (** Non-short circuiting and branch-free boolean operators.

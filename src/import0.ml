@@ -122,9 +122,7 @@ external ( && ) : bool -> bool -> bool = "%sequand"
 external ( || ) : bool -> bool -> bool = "%sequor"
 external not : bool -> bool = "%boolnot"
 
-(* We use [Obj.magic] here as other implementations generate a conditional jump and the
-   performance difference is noticeable. *)
-let bool_to_int (x : bool) : int = Caml.Obj.magic x
+external bool_to_int : bool -> int = "Number" [@@bs.val]
 
 (* This need to be declared as an external for the warnings to work properly *)
 external ignore : _ -> unit = "%ignore"
