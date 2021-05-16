@@ -547,6 +547,14 @@ module Export = struct
   (** Int operators and comparisons *)
 
   include Int.O
+
+  (** Optimise some accessors to externals *)
+  external ( + ) : int -> int -> int = "%addint"
+  external ( - ) : int -> int -> int = "%subint"
+  external ( * ) : int -> int -> int = "%mulint"
+  external ( ~- ) : int -> int = "%negint"
+  external neg : int -> int = "%negint"
+
   include Int_replace_polymorphic_compare
 
   (** Float operators *)
