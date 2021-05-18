@@ -34,7 +34,6 @@ let num_bits = Int_conversions.num_bits_int
 let float_lower_bound = Float0.lower_bound_for_int num_bits
 let float_upper_bound = Float0.upper_bound_for_int num_bits
 let to_float = Caml.float_of_int
-let of_float_unchecked = Caml.int_of_float
 
 let of_float f =
   if
@@ -84,8 +83,8 @@ include Conv.Make_hex (struct
     let zero = zero
     let neg = ( ~- )
     let ( < ) = ( < )
-    let to_string i = Printf.sprintf "%x" i
-    let of_string s = Caml.Scanf.sscanf s "%x" Fn.id
+    external to_string : t -> (_ [@bs.as 16]) -> string = "toString" [@@bs.send]
+    external of_string : string -> (_ [@bs.as 16]) -> t = "parseInt" [@@bs.val]
     let module_name = "Base.Int.Hex"
   end)
 
@@ -120,20 +119,10 @@ let clamp t ~min ~max =
   else Ok (clamp_unchecked t ~min ~max)
 ;;
 
-let pred i = i - 1
-let succ i = i + 1
-let to_int i = i
-let to_int_exn = to_int
-let of_int i = i
-let of_int_exn = of_int
 let max_value = Caml.max_int
 let min_value = Caml.min_int
 let max_value_30_bits = 0x3FFF_FFFF
-let of_int32 = Conv.int32_to_int
-let of_int32_exn = Conv.int32_to_int_exn
 let of_int32_trunc = Conv.int32_to_int_trunc
-let to_int32 = Conv.int_to_int32
-let to_int32_exn = Conv.int_to_int32_exn
 let to_int32_trunc = Conv.int_to_int32_trunc
 let of_int64 = Conv.int64_to_int
 let of_int64_exn = Conv.int64_to_int_exn
@@ -145,24 +134,11 @@ let of_nativeint_trunc = Conv.nativeint_to_int_trunc
 let to_nativeint = Conv.int_to_nativeint
 let to_nativeint_exn = to_nativeint
 let abs x = abs x
-let ( + ) x y = x + y
-let ( - ) x y = x - y
-let ( * ) x y = x * y
-let ( / ) x y = x / y
 let neg x = -x
-let ( ~- ) = neg
 
 (* note that rem is not same as % *)
 let rem a b = a mod b
-let incr = Caml.incr
-let decr = Caml.decr
-let shift_right a b = a asr b
-let shift_right_logical a b = a lsr b
-let shift_left a b = a lsl b
 let bit_not a = lnot a
-let bit_or a b = a lor b
-let bit_and a b = a land b
-let bit_xor a b = a lxor b
 let pow = Int_math.Private.int_pow
 let ( ** ) b e = pow b e
 
@@ -250,19 +226,19 @@ let sign = Sign.of_int
 let popcount = Popcount.int_popcount
 
 module Pre_O = struct
-  let ( + ) = ( + )
-  let ( - ) = ( - )
-  let ( * ) = ( * )
-  let ( / ) = ( / )
-  let ( ~- ) = ( ~- )
+  external ( + ) : t -> t -> t = "%addint"
+  external ( - ) : t -> t -> t = "%subint"
+  external ( * ) : t -> t -> t = "%mulint"
+  external ( / ) : t -> t -> t = "%divint"
+  external ( ~- ) : t -> t = "%negint"
   let ( ** ) = ( ** )
 
-  include (Int_replace_polymorphic_compare : Comparisons.Infix with type t := t)
+  include (Int_replace_polymorphic_compare : Comparisons.Infix_external with type t := t)
 
   let abs = abs
   let neg = neg
   let zero = zero
-  let of_int_exn = of_int_exn
+  external of_int_exn : t -> t = "%identity"
 end
 
 module O = struct
@@ -341,3 +317,39 @@ end
    application that could shadow its definitions. This is here so that efficient versions
    of the comparison functions are exported by this module. *)
 include Int_replace_polymorphic_compare
+
+external ( + ) : t -> t -> t = "%addint"
+external ( - ) : t -> t -> t = "%subint"
+external ( * ) : t -> t -> t = "%mulint"
+external ( / ) : t -> t -> t = "%divint"
+external ( ~- ) : t -> t = "%negint"
+external neg : t -> t  = "%negint"
+external rem : t -> t -> t = "%modint"
+external ( land ) : t -> t -> t = "%andint"
+external ( lor ) : t -> t -> t = "%orint"
+external ( lxor ) : t -> t -> t = "%xorint"
+external ( lsl ) : t -> t -> t = "%lslint"
+external ( asr ) : t -> t -> t = "%asrint"
+external ( lsr ) : t -> t -> t = "%lsrint"
+external succ : int -> int = "%succint"
+external pred : int -> int = "%predint"
+external incr : int ref -> unit = "%incr"
+external decr : int ref -> unit = "%decr"
+external bit_and : t -> t -> t = "%andint"
+external bit_or : t -> t -> t = "%orint"
+external bit_xor : t -> t -> t = "%xorint"
+external shift_left : t -> t -> t = "%lslint"
+external shift_right : t -> t -> t = "%asrint"
+external shift_right_logical : t -> t -> t = "%lsrint"
+external of_int : t -> t = "%identity"
+external to_int : t -> t = "%identity"
+external of_int32 : int32 -> t option = "%int32_to_int"
+external to_int32 : t -> int32 option = "%int32_of_int"
+external of_int32_exn : int32 -> t = "%int32_to_int"
+external to_int32_exn : t -> int32 = "%int32_of_int"
+external of_int_exn : t -> t = "%identity"
+external to_int_exn : t -> t = "%identity"
+external of_float_unchecked : float -> t = "%intoffloat"
+external to_float : t -> float = "%identity"
+external to_string : t -> string = "toString" [@@bs.send]
+external of_string : string -> t = "parseInt" [@@bs.val]

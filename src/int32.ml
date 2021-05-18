@@ -30,8 +30,6 @@ include Comparator.Make (T)
 let num_bits = 32
 let float_lower_bound = Float0.lower_bound_for_int num_bits
 let float_upper_bound = Float0.upper_bound_for_int num_bits
-let float_of_bits = float_of_bits
-let bits_of_float = bits_of_float
 let shift_right_logical = shift_right_logical
 let shift_right = shift_right
 let shift_left = shift_left
@@ -120,18 +118,12 @@ let ( + ) = add
 let ( ~- ) = neg
 let incr r = r := !r + one
 let decr r = r := !r - one
-let of_int32 t = t
-let of_int32_exn = of_int32
-let to_int32 t = t
-let to_int32_exn = to_int32
 let popcount = Popcount.int32_popcount
 
 module Conv = Int_conversions
 
-let of_int = Conv.int_to_int32
 let of_int_exn = Conv.int_to_int32_exn
 let of_int_trunc = Conv.int_to_int32_trunc
-let to_int = Conv.int32_to_int
 let to_int_exn = Conv.int32_to_int_exn
 let to_int_trunc = Conv.int32_to_int_trunc
 let of_int64 = Conv.int64_to_int32
@@ -307,3 +299,41 @@ end
 include O
 
 (* [Int32] and [Int32.O] agree value-wise *)
+
+external bits_of_float : float -> t
+    = "caml_int32_bits_of_float" "caml_int32_bits_of_float_unboxed"
+    [@@unboxed] [@@noalloc]
+external float_of_bits : t -> float
+    = "caml_int32_float_of_bits" "caml_int32_float_of_bits_unboxed"
+    [@@unboxed] [@@noalloc]
+external ( + ) : int32 -> int32 -> int32 = "%int32_add"
+external ( - ) : int32 -> int32 -> int32 = "%int32_sub"
+external ( * ) : int32 -> int32 -> int32 = "%int32_mul"
+external ( / ) : int32 -> int32 -> int32 = "%int32_div"
+external ( ~- ) : int32 -> int32 = "%int32_neg"  
+external neg : int32 -> int32  = "%int32_neg"
+external rem : int32 -> int32 -> int32 = "%int32_mod"
+external ( land ) : int32 -> int32 -> int32 = "%int32_and"
+external ( lor ) : int32 -> int32 -> int32 = "%int32_or"
+external ( lxor ) : int32 -> int32 -> int32 = "%int32_xor"
+external ( lsl ) : int32 -> int32 -> int32 = "%int32_lsl"
+external ( asr ) : int32 -> int32 -> int32 = "%int32_asr"
+external ( lsr ) : int32 -> int32 -> int32 = "%int32_lsr"
+
+external bit_and : t -> t -> t = "%int32_and"
+external bit_or : t -> t -> t = "%int32_or"
+external bit_xor : t -> t -> t = "%%int32_xor"
+external shift_left : t -> t -> t = "%int32_lsl"
+external shift_right : t -> t -> t = "%int32_asr"
+external shift_right_logical : t -> t -> t = "%int32_lsr"
+external of_int : int -> t option = "%int32_of_int"
+external to_int : t -> int option = "%int32_to_int"
+external of_int32 : int32 -> t option = "%identity"
+external to_int32 : t -> int32 option = "%identity"
+external of_int32_exn : int32 -> t = "%identity"
+external to_int32_exn : t -> int32 = "%identity"
+external of_int_exn : int -> t = "%int32_of_int"
+external to_int_exn : t -> int = "%int32_to_int"
+external to_float : int32 -> float
+  = "caml_int32_to_float" "caml_int32_to_float_unboxed"
+  [@@unboxed] [@@noalloc]

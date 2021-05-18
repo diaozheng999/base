@@ -9,7 +9,7 @@
     "prepack": "bsb -make-world"
   },
   "dependencies": {
-    "@nasi/js-base-runtime": "0.0.0-unstable.2",
+    "@nasi/js-base-runtime": ">=0.0.0-unstable.2",
     "@nasi/js-base-shadow-stdlib": "^0.0.0-unstable.1",
     "@nasi/js-sexplib0": "^0.0.0-unstable.1"
   },

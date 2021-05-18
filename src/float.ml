@@ -871,12 +871,12 @@ let clamp t ~min ~max =
          [ "min", T.sexp_of_t min; "max", T.sexp_of_t max ])
 ;;
 
-let ( + ) = ( +. )
-let ( - ) = ( -. )
-let ( * ) = ( *. )
-let ( ** ) = ( ** )
-let ( / ) = ( /. )
-let ( ~- ) = ( ~-. )
+external ( + ) : float -> float -> float = "%addfloat"
+external ( - ) : float -> float -> float = "%subfloat"
+external ( * ) : float -> float -> float = "%mulfloat"
+external ( / ) : float -> float -> float = "%divfloat"
+external ( ** ) : float -> float -> float =  "pow" [@@bs.val] [@@bs.scope "Math"]
+external ( ~- ) : float -> float = "%negfloat"
 
 let sign_exn t : Sign.t =
   if t > 0.
@@ -970,29 +970,29 @@ include Pretty_printer.Register (struct
   end)
 
 module O = struct
-  let ( + ) = ( + )
-  let ( - ) = ( - )
-  let ( * ) = ( * )
-  let ( / ) = ( / )
-  let ( ~- ) = ( ~- )
-  let ( ** ) = ( ** )
+  external ( + ) : float -> float -> float = "%addfloat"
+  external ( - ) : float -> float -> float = "%subfloat"
+  external ( * ) : float -> float -> float = "%mulfloat"
+  external ( / ) : float -> float -> float = "%divfloat"
+  external ( ** ) : float -> float -> float =  "pow" [@@bs.val] [@@bs.scope "Math"]
+  external ( ~- ) : float -> float = "%negfloat"
 
-  include (Float_replace_polymorphic_compare : Comparisons.Infix with type t := t)
+  include (Float_replace_polymorphic_compare : Comparisons.Infix_external with type t := t)
 
-  let abs = abs
-  let neg = neg
+  external abs : float -> float = "abs" [@@bs.val] [@@bs.scope "Math"]
+  external neg : float -> float = "%negfloat"
   let zero = zero
-  let of_int = of_int
-  let of_float x = x
+  external of_int : int -> float = "%identity"
+  external of_float: float -> t = "%identity"
 end
 
 module O_dot = struct
-  let ( *. ) = ( * )
-  let ( +. ) = ( + )
-  let ( -. ) = ( - )
-  let ( /. ) = ( / )
-  let ( ~-. ) = ( ~- )
-  let ( **. ) = ( ** )
+  external ( +. ) : float -> float -> float = "%addfloat"
+  external ( -. ) : float -> float -> float = "%subfloat"
+  external ( *. ) : float -> float -> float = "%mulfloat"
+  external ( /. ) : float -> float -> float = "%divfloat"
+  external ( **. ) : float -> float -> float =  "pow" [@@bs.val] [@@bs.scope "Math"]
+  external ( ~-. ) : float -> float = "%negfloat"
 end
 
 module Private = struct
