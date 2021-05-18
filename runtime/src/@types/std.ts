@@ -1,7 +1,7 @@
 declare module "@rescript/std/lib/js/caml_hash_primitive" {
   export function caml_hash_mix_int(state: number, int: number): number;
   export function caml_hash_mix_string(state: number, string: string): number;
-  export function caml_hash_mix_final(state: number): number;
+  export function caml_hash_final_mix(state: number): number;
 }
 
 declare module "@rescript/std/lib/js/caml_int64" {

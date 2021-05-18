@@ -1,7 +1,7 @@
 import {
   caml_hash_mix_int,
   caml_hash_mix_string,
-  caml_hash_mix_final,
+  caml_hash_final_mix,
 } from "@rescript/std/lib/js/caml_hash_primitive";
 import { int64 } from "./int64";
 
@@ -42,7 +42,7 @@ export function hashString(s: string): number {
 }
 
 export function getHashValue(seed: number): number {
-  return caml_hash_mix_final(seed) & 0x3fffffff;
+  return caml_hash_final_mix(seed) & 0x3fffffff;
 }
 
 export function hashFloat(f: number): number {
