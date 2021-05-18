@@ -1,7 +1,7 @@
 {
   "name": "@nasi/js-base-runtime",
   "description": "Collected runtime libraries for Jane Street's Base",
-  "version": "0.0.0-unstable.1",
+  "version": "0.0.0-unstable.2",
   "dependencies": {
     "@rescript/std": "^9.1.0"
   },
