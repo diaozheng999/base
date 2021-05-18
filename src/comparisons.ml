@@ -16,6 +16,17 @@ module type Infix = sig
   val ( <> ) : t -> t -> bool
 end
 
+(** Optimised version of [Infix] specifically used for ReScript compilations. *)
+module type Infix_external = sig
+  type t
+  external ( >= ) : t -> t -> bool = "%greaterequal"
+  external ( <= ) : t -> t -> bool = "%lessequal"
+  external ( = ) : t -> t -> bool = "%eq"
+  external ( > ) : t -> t -> bool = "%greaterthan"
+  external ( < ) : t -> t -> bool = "%lessthan"
+  external ( <> ) : t -> t -> bool = "%noteq"
+end
+
 module type S = sig
   include Infix
 

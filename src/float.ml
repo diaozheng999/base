@@ -977,7 +977,7 @@ module O = struct
   let ( ~- ) = ( ~- )
   let ( ** ) = ( ** )
 
-  include (Float_replace_polymorphic_compare : Comparisons.Infix with type t := t)
+  include (Float_replace_polymorphic_compare : Comparisons.Infix_external with type t := t)
 
   let abs = abs
   let neg = neg

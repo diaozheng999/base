@@ -300,7 +300,7 @@ module O : sig
   val ( ** ) : t -> t -> t
   val ( ~- ) : t -> t
 
-  include Comparisons.Infix with type t := t
+  include Comparisons.Infix_external with type t := t
 
   val abs : t -> t
   val neg : t -> t
