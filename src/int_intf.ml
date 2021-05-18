@@ -235,6 +235,38 @@ module type Operators = sig
   val ( lsr ) : t -> int -> t
 end
 
+module type Operators_external_int = sig
+  external ( + ) : int -> int -> int = "%addint"
+  external ( - ) : int -> int -> int = "%subint"
+  external ( * ) : int -> int -> int = "%mulint"
+  external ( / ) : int -> int -> int = "%divint"
+  external ( ~- ) : int -> int = "%negint"
+  external neg : int -> int  = "%negint"
+  external rem : int -> int -> int = "%modint"
+  external ( land ) : int -> int -> int = "%andint"
+  external ( lor ) : int -> int -> int = "%orint"
+  external ( lxor ) : int -> int -> int = "%xorint"
+  external ( lsl ) : int -> int -> int = "%lslint"
+  external ( asr ) : int -> int -> int = "%asrint"
+  external ( lsr ) : int -> int -> int = "%lsrint"
+end
+
+module type Operators_external_int32 = sig
+  external ( + ) : int32 -> int32 -> int32 = "%int32_add"
+  external ( - ) : int32 -> int32 -> int32 = "%int32_sub"
+  external ( * ) : int32 -> int32 -> int32 = "%int32_mul"
+  external ( / ) : int32 -> int32 -> int32 = "%int32_div"
+  external ( ~- ) : int32 -> int32 = "%int32_neg"  
+  external neg : int32 -> int32  = "%int32_neg"
+  external rem : int32 -> int32 -> int32 = "%int32_mod"
+  external ( land ) : int32 -> int32 -> int32 = "%int32_and"
+  external ( lor ) : int32 -> int32 -> int32 = "%int32_or"
+  external ( lxor ) : int32 -> int32 -> int32 = "%int32_xor"
+  external ( lsl ) : int32 -> int32 -> int32 = "%int32_lsl"
+  external ( asr ) : int32 -> int32 -> int32 = "%int32_asr"
+  external ( lsr ) : int32 -> int32 -> int32 = "%int32_lsr"
+end
+
 (** [S_unbounded] is a generic interface for unbounded integers, e.g. [Bignum.Bigint].
     [S_unbounded] is a restriction of [S] (below) that omits values that depend on
     fixed-size integers. *)

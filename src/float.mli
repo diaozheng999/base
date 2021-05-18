@@ -247,12 +247,13 @@ val is_inf : t -> bool
 
 val min_inan : t -> t -> t
 val max_inan : t -> t -> t
-val ( + ) : t -> t -> t
-val ( - ) : t -> t -> t
-val ( / ) : t -> t -> t
-val ( * ) : t -> t -> t
-val ( ** ) : t -> t -> t
-val ( ~- ) : t -> t
+
+external ( + ) : float -> float -> float = "%addfloat"
+external ( - ) : float -> float -> float = "%subfloat"
+external ( * ) : float -> float -> float = "%mulfloat"
+external ( / ) : float -> float -> float = "%divfloat"
+external ( ** ) : float -> float -> float =  "pow" [@@bs.val] [@@bs.scope "Math"]
+external ( ~- ) : float -> float = "%negfloat"
 
 (** Returns the fractional part and the whole (i.e., integer) part. For example, [modf
     (-3.14)] returns [{ fractional = -0.14; integral = -3.; }]! *)
@@ -293,31 +294,32 @@ val abs : t -> t
 
 (** A sub-module designed to be opened to make working with floats more convenient.  *)
 module O : sig
-  val ( + ) : t -> t -> t
-  val ( - ) : t -> t -> t
-  val ( * ) : t -> t -> t
-  val ( / ) : t -> t -> t
-  val ( ** ) : t -> t -> t
-  val ( ~- ) : t -> t
+  
+  external ( + ) : float -> float -> float = "%addfloat"
+  external ( - ) : float -> float -> float = "%subfloat"
+  external ( * ) : float -> float -> float = "%mulfloat"
+  external ( / ) : float -> float -> float = "%divfloat"
+  external ( ** ) : float -> float -> float =  "pow" [@@bs.val] [@@bs.scope "Math"]
+  external ( ~- ) : float -> float = "%negfloat"
 
   include Comparisons.Infix_external with type t := t
 
-  val abs : t -> t
-  val neg : t -> t
+  external abs : float -> float = "abs" [@@bs.val] [@@bs.scope "Math"]
+  external neg : float -> float = "%negfloat"
   val zero : t
-  val of_int : int -> t
-  val of_float : float -> t
+  external of_int : int -> float = "%identity"
+  external of_float: float -> t = "%identity"
 end
 
 (** Similar to [O], except that operators are suffixed with a dot, allowing one to have
     both int and float operators in scope simultaneously. *)
 module O_dot : sig
-  val ( +. ) : t -> t -> t
-  val ( -. ) : t -> t -> t
-  val ( *. ) : t -> t -> t
-  val ( /. ) : t -> t -> t
-  val ( **. ) : t -> t -> t
-  val ( ~-. ) : t -> t
+  external ( +. ) : float -> float -> float = "%addfloat"
+  external ( -. ) : float -> float -> float = "%subfloat"
+  external ( *. ) : float -> float -> float = "%mulfloat"
+  external ( /. ) : float -> float -> float = "%divfloat"
+  external ( **. ) : float -> float -> float =  "pow" [@@bs.val] [@@bs.scope "Math"]
+  external ( ~-. ) : float -> float = "%negfloat"
 end
 
 (** [to_string x] builds a string [s] representing the float [x] that guarantees the round
@@ -606,3 +608,13 @@ module Private : sig
   val int63_round_nearest_arch64_noalloc_exn : t -> Int63.t
   val iround_nearest_exn_64 : t -> int
 end
+
+external ( < ) : float -> float -> bool = "%lessthan"
+external ( <= ) : float -> float -> bool = "%lessequal"
+external ( <> ) : float -> float -> bool = "%noteq"
+external ( = ) : float -> float -> bool = "%eq"
+external ( > ) : float -> float -> bool = "%greaterthan"
+external ( >= ) : float -> float -> bool = "%greaterequal"
+external ascending : float -> float -> int = "%compare"
+external compare : float -> float -> int = "%compare"
+external equal : 'a -> 'a -> bool = "%eq"

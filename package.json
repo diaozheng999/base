@@ -1,7 +1,7 @@
 {
   "name": "@nasi/js-base",
   "description": "Fork of JaneStreet's Base for ReScript",
-  "version": "0.0.0-unstable.6",
+  "version": "0.0.0-unstable.7",
   "scripts": {
     "build": "bsb -make-world",
     "clean": "bsb -clean-world",
@@ -11,7 +11,7 @@
   "dependencies": {
     "@nasi/js-base-shadow-stdlib": "^0.0.0-unstable.1",
     "@nasi/js-sexplib0": "^0.0.0-unstable.1",
-    "@nasi/js-base-runtime": "^0.0.0-unstable.1"
+    "@nasi/js-base-runtime": ">=0.0.0-unstable.2"
   },
   "devDependencies": {
     "bs-platform": "^9.0.2",
