@@ -15,7 +15,7 @@ type backend_type = Caml.Sys.backend_type =
   | Other of string
 
 let backend_type = Caml.Sys.backend_type
-let interactive = Caml.Sys.interactive
+let interactive = Sys.interactive
 let os_type = Caml.Sys.os_type
 let unix = Caml.Sys.unix
 let win32 = Caml.Sys.win32

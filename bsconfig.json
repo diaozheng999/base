@@ -19,5 +19,5 @@
     "number": "-44-60",
     "error" : "+101"
   },
-  "ppx-flags": ["ppx-install"]
+  "ppx-flags": ["ppx_sexp_conv", "ppx_hash", "ppx_compare", "ppx_enumerate", "ppx_remove_deriving"]
 }

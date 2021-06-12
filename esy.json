@@ -1,0 +1,24 @@
+{
+  "name": "@nasi/js-base",
+  "dependencies": {
+    "ocaml": "4.12.x",
+    "melange": "melange-re/melange",
+    "@opam/ocaml-lsp-server": "1.6.1",
+    "@opam/ppx_sexp_conv": "*",
+    "@opam/ppx_hash": "*",
+    "@opam/ppx_compare": "*",
+    "@opam/ppx_enumerate": "*",
+    "@nasi/ppx-remove-deriving": "*"
+  },
+  "esy": {
+    "buildsInSource": "unsafe",
+    "build": "bsb -make-world"
+  },
+  "installConfig": {
+    "pnp": false
+  },
+  "resolutions": {
+    "@opam/ocaml-lsp-server":
+      "github:diaozheng999/ocaml-lsp:ocaml-lsp-server.opam#c426212076cbbdc584b8c8a93e951e639c067547"
+  }
+}

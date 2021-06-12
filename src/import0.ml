@@ -35,7 +35,7 @@ include (
   with module Uchar := Shadow_stdlib.Uchar
   with module Unit := Shadow_stdlib.Unit) [@ocaml.warning "-3"]
 
-type 'a ref = 'a Caml.ref = { mutable contents : 'a }
+type nonrec 'a ref = 'a ref = { mutable contents : 'a }
 
 (* Reshuffle [Caml] so that we choose the modules using labels when available. *)
 module Caml = struct

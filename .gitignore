@@ -7,3 +7,7 @@ _opam
 **/*.bs.js
 **/_ppx
 **/node_modules
+dune
+dune.bsb
+.melange.eobjs
+_esy
