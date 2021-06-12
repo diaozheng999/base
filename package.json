@@ -11,8 +11,7 @@
     "@nasi/js-sexplib0": "^0.0.0-unstable.1"
   },
   "devDependencies": {
-    "bs-platform": "^9.0.2",
-    "ppx-install": "^0.3.0"
+    "bs-platform": "^9.0.2"
   },
   "files": [
     "src",
