@@ -3,10 +3,7 @@
   "description": "Fork of JaneStreet's Base for ReScript",
   "version": "0.0.0-unstable.8",
   "scripts": {
-    "build": "bsb -make-world",
-    "clean": "bsb -clean-world",
-    "ppx-install": "ppx-install --build",
-    "prepack": "bsb -make-world"
+    "build": "esy build"
   },
   "dependencies": {
     "@nasi/js-base-runtime": ">=0.0.0-unstable.2",
