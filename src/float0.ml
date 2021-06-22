@@ -23,7 +23,7 @@ external ( ** ) : float -> float -> float = "pow" [@@bs.val] [@@bs.scope "Math"]
 (* The bits of INRIA's [Pervasives] that we just want to expose in [Float]. Most are
    already deprecated in [Pervasives], and eventually all of them should be. *)
 include (
-  Caml :
+  Shadow.Shadow_float :
   sig
     external frexp : float -> float * int = "caml_frexp_float"
 
@@ -36,8 +36,8 @@ include (
 
     external log10 : float -> float = "log10" [@@bs.val] [@@bs.scope "Math"]
 
-    external expm1 : float -> float = "caml_expm1_float" "caml_expm1"
-    [@@unboxed] [@@noalloc]
+    external expm1 : float -> float = "expm1" [@@bs.val] [@@bs.scope "Math"]
+
     external log1p : float -> float = "log1p" [@@bs.val] [@@bs.scope "Math"]
 
     external copysign : float -> float -> float = "caml_copysign_float" "caml_copysign"
@@ -56,8 +56,7 @@ include (
     
     external atan2 : float -> float -> float = "atan2" [@@bs.val] [@@bs.scope "Math"]
 
-    external hypot : float -> float -> float = "caml_hypot_float" "caml_hypot"
-    [@@unboxed] [@@noalloc]
+    external hypot : float -> float -> float = "hypot" [@@bs.val] [@@bs.scope "Math"]
     
     external cosh : float -> float = "cosh" [@@bs.val] [@@bs.scope "Math"]
     

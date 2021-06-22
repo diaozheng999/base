@@ -322,7 +322,7 @@ external ( lsr ) : int32 -> int32 -> int32 = "%int32_lsr"
 
 external bit_and : t -> t -> t = "%int32_and"
 external bit_or : t -> t -> t = "%int32_or"
-external bit_xor : t -> t -> t = "%%int32_xor"
+external bit_xor : t -> t -> t = "%int32_xor"
 external shift_left : t -> t -> t = "%int32_lsl"
 external shift_right : t -> t -> t = "%int32_asr"
 external shift_right_logical : t -> t -> t = "%int32_lsr"

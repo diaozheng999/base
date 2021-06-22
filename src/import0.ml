@@ -39,6 +39,7 @@ type nonrec 'a ref = 'a ref = { mutable contents : 'a }
 
 (* Reshuffle [Caml] so that we choose the modules using labels when available. *)
 module Caml = struct
+  include Stdlib.Pervasives [@ocaml.warning "-3"]
 
   module Arg = Caml.Arg (** @canonical Caml.Arg *)
 
@@ -109,8 +110,6 @@ module Caml = struct
   module Uchar = Caml.Uchar (** @canonical Caml.Uchar *)
 
   module Unit = Caml.Unit (** @canonical Caml.Unit *)
-
-  include Pervasives [@ocaml.warning "-3"]
 
   exception Not_found = Caml.Not_found
 end

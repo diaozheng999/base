@@ -447,8 +447,7 @@ external log10 : float -> float = "log10" [@@bs.val] [@@bs.scope "Math"]
 
 (** [expm1 x] computes [exp x -. 1.0], giving numerically-accurate results even if [x] is
     close to [0.0]. *)
-external expm1 : t -> t = "caml_expm1_float" "caml_expm1"
-[@@unboxed] [@@noalloc]
+external expm1 : t -> t = "expm1" [@@bs.val] [@@bs.scope "Math"]
 
 (** [log1p x] computes [log(1.0 +. x)] (natural logarithm), giving numerically-accurate
     results even if [x] is close to [0.0]. *)
@@ -488,8 +487,7 @@ external atan2 : float -> float -> float = "atan2" [@@bs.val] [@@bs.scope "Math"
 (** [hypot x y] returns [sqrt(x *. x + y *. y)], that is, the length of the hypotenuse of
     a right-angled triangle with sides of length [x] and [y], or, equivalently, the
     distance of the point [(x,y)] to origin. *)
-external hypot : t -> t -> t = "caml_hypot_float" "caml_hypot"
-[@@unboxed] [@@noalloc]
+external hypot : t -> t -> t = "hypot" [@@bs.val] [@@bs.scope "Math"]
 
 (** Hyperbolic cosine.  Argument is in radians. *)
 external cosh : float -> float = "cosh" [@@bs.val] [@@bs.scope "Math"]

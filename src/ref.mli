@@ -3,7 +3,7 @@
 
 open! Import
 
-type 'a t = 'a Caml.ref = { mutable contents : 'a }
+type 'a t = 'a ref = { mutable contents : 'a }
 [@@deriving_inline compare, equal, sexp, sexp_grammar]
 
 val compare : ('a -> 'a -> int) -> 'a t -> 'a t -> int

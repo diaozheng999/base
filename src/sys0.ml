@@ -15,7 +15,10 @@ type backend_type = Caml.Sys.backend_type =
   | Other of string
 
 let backend_type = Caml.Sys.backend_type
-let interactive = Sys.interactive
+
+(* For some reason in Melange, Stdlib__no_alias.Stdlib.ref is not typed as
+   Pervasives.ref *)
+let interactive : bool ref = Obj.magic Caml.Sys.interactive
 let os_type = Caml.Sys.os_type
 let unix = Caml.Sys.unix
 let win32 = Caml.Sys.win32
