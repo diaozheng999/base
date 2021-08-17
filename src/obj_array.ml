@@ -10,7 +10,7 @@ type t = Caml.Obj.t array
 
 (* Skip this invariant for now. We're not dealing with typed arrays yet. *)
 let invariant _t = assert (true)
-let length = Array.length
+external length : t -> int = "%array_length"
 let swap t i j = Array.swap t i j
 
 let sexp_of_t t =
@@ -20,23 +20,13 @@ let sexp_of_t t =
 
 let zero_obj = Caml.Obj.repr (0 : int)
 
+external create : len:int -> Caml.Obj.t -> t = "caml_make_vect"
+
 (* We call [Array.create] with a value that is not a float so that the array doesn't get
    tagged with [Double_array_tag]. *)
-let create_zero ~len = Array.create ~len zero_obj
+let create_zero ~len = create ~len zero_obj
 
-let create ~len x =
-  (* If we can, use [Array.create] directly. *)
-  if Js.typeof x == "number"
-  then Array.create ~len x
-  else (
-    (* Otherwise use [create_zero] and set the contents *)
-    let t = create_zero ~len in
-    let x = Sys.opaque_identity x in
-    for i = 0 to len - 1 do
-      Array.unsafe_set t i x
-    done;
-    t)
-;;
+external create_empty : len:int -> t = "Array" [@@bs.new]
 
 let empty = [||]
 
@@ -47,20 +37,16 @@ type not_a_float =
 let _not_a_float_0 = Not_a_float_0
 let _not_a_float_1 = Not_a_float_1 42
 
-let get t i =
-  (* Make the compiler believe [t] is an array not containing floats so it does not check
-     if [t] is tagged with [Double_array_tag].  It is NOT ok to use [int array] since (if
-     this function is inlined and the array contains in-heap boxed values) wrong register
-     typing may result, leading to a failure to register necessary GC roots. *)
-  Caml.Obj.repr ((Caml.Obj.magic (t : t) : not_a_float array).(i) : not_a_float)
-;;
+(* Melange: We leave the boxing to the respective JS engine, this is simply
+   a passthrough for array functions. *)
 
-let[@inline always] unsafe_get t i =
-  (* Make the compiler believe [t] is an array not containing floats so it does not check
-     if [t] is tagged with [Double_array_tag]. *)
-  Caml.Obj.repr
-    (Array.unsafe_get (Caml.Obj.magic (t : t) : not_a_float array) i : not_a_float)
-;;
+external get : t -> int -> Obj.t = "%array_safe_get"
+
+external unsafe_get : t -> int -> Obj.t = "%array_unsafe_get"
+
+external set : t -> int -> Obj.t -> unit = "%array_safe_set"
+
+external unsafe_set : t -> int -> Obj.t -> unit = "%array_unsafe_set"
 
 let[@inline always] unsafe_set_with_caml_modify t i obj =
   (* Same comment as [unsafe_get]. Sys.opaque_identity prevents the compiler from
@@ -81,30 +67,8 @@ let[@inline always] unsafe_set_int_assuming_currently_int t i int =
 
 let unsafe_is_int obj = Js.typeof obj == "number"
 
-(* For [set] and [unsafe_set], if a pointer is involved, we first do a physical-equality
-   test to see if the pointer is changing.  If not, we don't need to do the [set], which
-   saves a call to [caml_modify].  We think this physical-equality test is worth it
-   because it is very cheap (both values are already available from the [is_int] test)
-   and because [caml_modify] is expensive. *)
-
-let set t i obj =
-  (* We use [get] first but then we use [Array.unsafe_set] since we know that [i] is
-     valid. *)
-  let old_obj = get t i in
-  if unsafe_is_int old_obj && unsafe_is_int obj
-  then unsafe_set_int_assuming_currently_int t i (Caml.Obj.obj obj : int)
-  else if not (phys_equal old_obj obj)
-  then unsafe_set_with_caml_modify t i obj
-;;
-
-let[@inline always] unsafe_set t i obj =
-  let old_obj = unsafe_get t i in
-  if unsafe_is_int old_obj && unsafe_is_int obj
-  then unsafe_set_int_assuming_currently_int t i (Caml.Obj.obj obj : int)
-  else if not (phys_equal old_obj obj)
-  then unsafe_set_with_caml_modify t i obj
-;;
-
+(** Melange: The ocamlopt optimisations below doesn't do much when targeting
+    Melange, leaving these functions here for compatibility. *)
 let[@inline always] unsafe_set_omit_phys_equal_check t i obj =
   let old_obj = unsafe_get t i in
   if unsafe_is_int old_obj && unsafe_is_int obj
@@ -165,8 +129,4 @@ include Blit.Make (struct
     let unsafe_blit = unsafe_blit
   end)
 
-let copy src =
-  let dst = create_zero ~len:(length src) in
-  blito ~src ~dst ();
-  dst
-;;
+external copy : t -> t = "slice" [@@bs.send]

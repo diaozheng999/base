@@ -1,6 +1,9 @@
 (** This module is not exposed for external use, and is only here for the implementation
     of [Uniform_array] internally.  [Obj.t Uniform_array.t] should be used in place of
-    [Obj_array.t].  *)
+    [Obj_array.t].
+    
+    Melange: There is no performance difference between [Uniform_array] and [Array]
+    when targeting Melange, these are presented for compatibility. *)
 
 open! Import
 
@@ -15,27 +18,35 @@ include Invariant.S with type t := t
 
 (** [create ~len x] returns an obj-array of length [len], all of whose indices have value
     [x]. *)
-val create : len:int -> Caml.Obj.t -> t
+external create : len:int -> Caml.Obj.t -> t = "caml_make_vect"
 
 (** [create_zero ~len] returns an obj-array of length [len], all of whose indices have
     value [Caml.Obj.repr 0]. *)
 val create_zero : len:int -> t
 
+(** [create_empty ~len] returns an obj-array of length [len], all of whose indices
+    are JavaScript value [undefined] *)
+external create_empty : len:int -> t = "Array" [@@bs.new]
+
 (** [copy t] returns a new array with the same elements as [t]. *)
-val copy : t -> t
+external copy : t -> t = "slice" [@@bs.send]
 
 val singleton : Caml.Obj.t -> t
 val empty : t
-val length : t -> int
+
+external length : t -> int = "%array_length"
 
 (** [get t i] and [unsafe_get t i] return the object at index [i].  [set t i o] and
     [unsafe_set t i o] set index [i] to [o].  In no case is the object copied.  The
     [unsafe_*] variants omit the bounds check of [i]. *)
-val get : t -> int -> Caml.Obj.t
+external get : t -> int -> Obj.t = "%array_safe_get"
 
-val unsafe_get : t -> int -> Caml.Obj.t
-val set : t -> int -> Caml.Obj.t -> unit
-val unsafe_set : t -> int -> Caml.Obj.t -> unit
+external unsafe_get : t -> int -> Obj.t = "%array_unsafe_get"
+
+external set : t -> int -> Obj.t -> unit = "%array_safe_set"
+
+external unsafe_set : t -> int -> Obj.t -> unit = "%array_unsafe_set"
+
 val swap : t -> int -> int -> unit
 
 (** [unsafe_set_assuming_currently_int t i obj] sets index [i] of [t] to [obj], but only

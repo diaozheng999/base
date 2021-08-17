@@ -77,7 +77,7 @@ module Caml = struct
 
   module Nativeint = Caml.Nativeint (** @canonical Caml.Nativeint *)
 
-  module Obj = Caml.Obj (** @canonical Caml.Obj *)
+  module Obj = Stdlib.Obj (** @canonical Caml.Obj *)
 
   module Option = Caml.Option (** @canonical Caml.Option *)
 

@@ -9,39 +9,42 @@ module Array = Array_base
 module Trusted : sig
   type 'a t
 
+  external unsafe_create_uninitialized : len:int -> 'a t = "Array" [@@bs.new]
+  external create : len:int -> 'a -> 'a t = "caml_make_vect"
+  external copy : 'a t -> 'a t = "slice" [@@bs.send]
+  external get : 'a t -> int -> 'a = "%array_safe_get"
+  external unsafe_get : 'a t -> int -> 'a = "%array_unsafe_get"
+  external set : 'a t -> int -> 'a -> unit = "%array_safe_set"
+  external unsafe_set : 'a t -> int -> 'a -> unit = "%array_unsafe_set"
+  external length : 'a t -> int = "%array_length"
+
   val empty : 'a t
-  val unsafe_create_uninitialized : len:int -> 'a t
   val create_obj_array : len:int -> 'a t
-  val create : len:int -> 'a -> 'a t
   val singleton : 'a -> 'a t
-  val get : 'a t -> int -> 'a
-  val set : 'a t -> int -> 'a -> unit
   val swap : _ t -> int -> int -> unit
-  val unsafe_get : 'a t -> int -> 'a
-  val unsafe_set : 'a t -> int -> 'a -> unit
   val unsafe_set_omit_phys_equal_check : 'a t -> int -> 'a -> unit
   val unsafe_set_int : 'a t -> int -> int -> unit
   val unsafe_set_int_assuming_currently_int : 'a t -> int -> int -> unit
   val unsafe_set_assuming_currently_int : 'a t -> int -> 'a -> unit
   val unsafe_set_with_caml_modify : 'a t -> int -> 'a -> unit
-  val length : 'a t -> int
   val unsafe_blit : ('a t, 'a t) Blit.blit
-  val copy : 'a t -> 'a t
   val unsafe_clear_if_pointer : _ t -> int -> unit
 end = struct
   type 'a t = Obj_array.t
 
+  external unsafe_create_uninitialized : len:int -> 'a t = "Array" [@@bs.new]
+  external create : len:int -> 'a -> 'a t = "caml_make_vect"
+  external copy : 'a t -> 'a t = "slice" [@@bs.send]
+  external get : 'a t -> int -> 'a = "%array_safe_get"
+  external unsafe_get : 'a t -> int -> 'a = "%array_unsafe_get"
+  external set : 'a t -> int -> 'a -> unit = "%array_safe_set"
+  external unsafe_set : 'a t -> int -> 'a -> unit = "%array_unsafe_set"
+  external length : 'a t -> int = "%array_length"
+
   let empty = Obj_array.empty
-  let unsafe_create_uninitialized ~len = Obj_array.create_zero ~len
   let create_obj_array ~len = Obj_array.create_zero ~len
-  let create ~len x = Obj_array.create ~len (Caml.Obj.repr x)
   let singleton x = Obj_array.singleton (Caml.Obj.repr x)
-  let swap t i j = Obj_array.swap t i j
-  let get arr i = Caml.Obj.obj (Obj_array.get arr i)
-  let set arr i x = Obj_array.set arr i (Caml.Obj.repr x)
-  let unsafe_get arr i = Caml.Obj.obj (Obj_array.unsafe_get arr i)
-  let unsafe_set arr i x = Obj_array.unsafe_set arr i (Caml.Obj.repr x)
-  let unsafe_set_int arr i x = Obj_array.unsafe_set_int arr i x
+  let swap t i j = Obj_array.swap t i j  let unsafe_set_int arr i x = Obj_array.unsafe_set_int arr i x
 
   let unsafe_set_int_assuming_currently_int arr i x =
     Obj_array.unsafe_set_int_assuming_currently_int arr i x
@@ -51,9 +54,7 @@ end = struct
     Obj_array.unsafe_set_assuming_currently_int arr i (Caml.Obj.repr x)
   ;;
 
-  let length = Obj_array.length
   let unsafe_blit = Obj_array.unsafe_blit
-  let copy = Obj_array.copy
 
   let unsafe_set_omit_phys_equal_check t i x =
     Obj_array.unsafe_set_omit_phys_equal_check t i (Caml.Obj.repr x)
@@ -81,14 +82,13 @@ let init l ~f =
     res)
 ;;
 
-let of_array arr = init ~f:(Array.unsafe_get arr) (Array.length arr)
+external of_array : 'a array -> 'a t = "slice" [@@bs.send]
+
 let map a ~f = init ~f:(fun i -> f (unsafe_get a i)) (length a)
 
-let iter a ~f =
-  for i = 0 to length a - 1 do
-    f (unsafe_get a i)
-  done
-;;
+external map : 'a t -> f:('a -> 'b[@bs.uncurry]) -> 'b t = "map" [@@bs.send]
+
+external iter : 'a t -> f:('a -> unit[@bs.uncurry]) -> unit = "forEach" [@@bs.send]
 
 let iteri a ~f =
   for i = 0 to length a - 1 do
@@ -107,14 +107,9 @@ let of_list l =
 
 (* It is not safe for [to_array] to be the identity function because we have code that
    relies on [float array]s being unboxed, for example in [bin_write_array]. *)
-let to_array t = Array.init (length t) ~f:(fun i -> unsafe_get t i)
+external to_array : 'a t -> 'a array = "slice" [@@bs.send]
 
-let exists t ~f =
-  let rec loop t ~f i =
-    if i < 0 then false else f (unsafe_get t i) || loop t ~f (i - 1)
-  in
-  loop t ~f (length t - 1)
-;;
+external exists : 'a t -> f:('a -> bool[@bs.uncurry]) -> bool = "some" [@@bs.send]
 
 let map2_exn t1 t2 ~f =
   let len = length t1 in
@@ -154,13 +149,9 @@ include Blit.Make1 (struct
     let unsafe_blit = unsafe_blit
   end)
 
-let fold t ~init ~f =
-  let r = ref init in
-  for i = 0 to length t - 1 do
-    r := f !r (unsafe_get t i)
-  done;
-  !r
-;;
+external reduce : 'a t ->  ('b -> 'a  -> 'b [@bs.uncurry]) -> 'b -> 'b = "reduce" [@@bs.send]
+
+let fold t ~init ~f = reduce t f init
 
 let min_elt t ~compare = Container.min_elt ~fold t ~compare
 let max_elt t ~compare = Container.max_elt ~fold t ~compare

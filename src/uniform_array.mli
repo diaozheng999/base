@@ -27,11 +27,11 @@ val empty : _ t
 val create : len:int -> 'a -> 'a t
 val singleton : 'a -> 'a t
 val init : int -> f:(int -> 'a) -> 'a t
-val length : 'a t -> int
-val get : 'a t -> int -> 'a
-val unsafe_get : 'a t -> int -> 'a
-val set : 'a t -> int -> 'a -> unit
-val unsafe_set : 'a t -> int -> 'a -> unit
+external get : 'a t -> int -> 'a = "%array_safe_get"
+external unsafe_get : 'a t -> int -> 'a = "%array_unsafe_get"
+external set : 'a t -> int -> 'a -> unit = "%array_safe_set"
+external unsafe_set : 'a t -> int -> 'a -> unit = "%array_unsafe_set"
+external length : 'a t -> int = "%array_length"
 val swap : _ t -> int -> int -> unit
 
 (** [unsafe_set_omit_phys_equal_check] is like [unsafe_set], except it doesn't do a
@@ -45,8 +45,8 @@ val unsafe_set_omit_phys_equal_check : 'a t -> int -> 'a -> unit
     [caml_modify]. *)
 val unsafe_set_with_caml_modify : 'a t -> int -> 'a -> unit
 
-val map : 'a t -> f:('a -> 'b) -> 'b t
-val iter : 'a t -> f:('a -> unit) -> unit
+external map : 'a t -> f:('a -> 'b[@bs.uncurry]) -> 'b t = "map" [@@bs.send]
+external iter : 'a t -> f:('a -> unit[@bs.uncurry]) -> unit = "forEach" [@@bs.send]
 
 (** Like {!iter}, but the function is applied to the index of the element as first
     argument, and the element itself as second argument. *)
@@ -54,20 +54,20 @@ val iteri : 'a t -> f:(int -> 'a -> unit) -> unit
 
 (** [of_array] and [to_array] return fresh arrays with the same contents rather than
     returning a reference to the underlying array. *)
-val of_array : 'a array -> 'a t
+external of_array : 'a array -> 'a t = "slice" [@@bs.send]
 
-val to_array : 'a t -> 'a array
+external to_array : 'a t -> 'a array = "slice" [@@bs.send]
 val of_list : 'a list -> 'a t
 val to_list : 'a t -> 'a list
 
 include Blit.S1 with type 'a t := 'a t
 
-val copy : 'a t -> 'a t
+external copy : 'a t -> 'a t = "slice" [@@bs.send]
 
 (** {2 Extra lowlevel and unsafe functions} *)
 
 (** The behavior is undefined if you access an element before setting it. *)
-val unsafe_create_uninitialized : len:int -> _ t
+external unsafe_create_uninitialized : len:int -> _ t = "Array" [@@bs.new]
 
 (** New obj array filled with [Obj.repr 0] *)
 val create_obj_array : len:int -> Caml.Obj.t t
@@ -93,7 +93,7 @@ val unsafe_set_int : Caml.Obj.t t -> int -> int -> unit
 val unsafe_clear_if_pointer : Caml.Obj.t t -> int -> unit
 
 (** As [Array.exists]. *)
-val exists : 'a t -> f:('a -> bool) -> bool
+external exists : 'a t -> f:('a -> bool[@bs.uncurry]) -> bool = "some" [@@bs.send]
 
 (** Functions with the 2 suffix raise an exception if the lengths of the two given arrays
     aren't the same. *)
