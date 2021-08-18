@@ -318,6 +318,110 @@ module type S1 = sig
   val max_elt : 'a t -> compare:('a -> 'a -> int) -> 'a option
 end
 
+(** Signature for OCaml/Reason representation of JavaScript default containers
+    used when compiling via Melange.
+    The JavaScript implementation should have the following protoype:
+      1. Container.prototype.length
+      2. Container.prototype.forEach
+      3. Container.prototype.some
+      4. Container.prototype.every
+      5. Container.prototype.find
+      6. Container.prototype[@@iterator]
+    The default JavaScript [Array] conforms to this requirement. *)
+module type S1_js_interop = sig
+  type 'a t
+
+  (** Checks whether the provided element is there, using [equal]. *)
+  val mem : 'a t -> 'a -> equal:('a -> 'a -> bool) -> bool
+
+  external length : 'a t -> int = "length" [@@bs.send]
+  val is_empty : 'a t -> bool
+
+  external iter : 'a t -> f:('a -> unit [@bs.uncurry]) -> unit ="forEach" [@@bs.send]
+
+  (** [fold t ~init ~f] returns [f (... f (f (f init e1) e2) e3 ...) en], where [e1..en]
+      are the elements of [t]  *)
+  val fold : 'a t -> init:'accum -> f:('accum -> 'a -> 'accum) -> 'accum
+
+  (** [fold_result t ~init ~f] is a short-circuiting version of [fold] that runs in the
+      [Result] monad.  If [f] returns an [Error _], that value is returned without any
+      additional invocations of [f]. *)
+  val fold_result
+    :  'a t
+    -> init:'accum
+    -> f:('accum -> 'a -> ('accum, 'e) Result.t)
+    -> ('accum, 'e) Result.t
+
+  (** [fold_until t ~init ~f ~finish] is a short-circuiting version of [fold]. If [f]
+      returns [Stop _] the computation ceases and results in that value. If [f] returns
+      [Continue _], the fold will proceed. If [f] never returns [Stop _], the final result
+      is computed by [finish].
+
+      Example:
+
+      {[
+        type maybe_negative =
+          | Found_negative of int
+          | All_nonnegative of { sum : int }
+
+        (** [first_neg_or_sum list] returns the first negative number in [list], if any,
+            otherwise returns the sum of the list. *)
+        let first_neg_or_sum =
+          List.fold_until ~init:0
+            ~f:(fun sum x ->
+              if x < 0
+              then Stop (Found_negative x)
+              else Continue (sum + x))
+            ~finish:(fun sum -> All_nonnegative { sum })
+        ;;
+
+        let x = first_neg_or_sum [1; 2; 3; 4; 5]
+        val x : maybe_negative = All_nonnegative {sum = 15}
+
+        let y = first_neg_or_sum [1; 2; -3; 4; 5]
+        val y : maybe_negative = Found_negative -3
+      ]} *)
+  val fold_until
+    :  'a t
+    -> init:'accum
+    -> f:('accum -> 'a -> ('accum, 'final) Continue_or_stop.t)
+    -> finish:('accum -> 'final)
+    -> 'final
+
+  (** Returns [true] if and only if there exists an element for which the provided
+      function evaluates to [true].  This is a short-circuiting operation. *)
+  external exists : 'a t -> f:('a -> bool[@bs.uncurry]) -> bool = "some" [@@bs.send]
+
+  (** Returns [true] if and only if the provided function evaluates to [true] for all
+      elements.  This is a short-circuiting operation. *)
+  external for_all : 'a t -> f:('a -> bool[@bs.uncurry]) -> bool = "every" [@@bs.send]
+
+  (** Returns the number of elements for which the provided function evaluates to true. *)
+  val count : 'a t -> f:('a -> bool) -> int
+
+  (** Returns the sum of [f i] for all [i] in the container. *)
+  val sum : (module Summable with type t = 'sum) -> 'a t -> f:('a -> 'sum) -> 'sum
+
+  (** Returns as an [option] the first element for which [f] evaluates to true. *)
+  external find : 'a t -> f:('a -> bool[@bs.uncurry]) -> bool = "find" [@@bs.send]
+
+  (** Returns the first evaluation of [f] that returns [Some], and returns [None] if there
+      is no such element.  *)
+  val find_map : 'a t -> f:('a -> 'b option) -> 'b option
+
+  val to_list : 'a t -> 'a list
+
+  external to_array : 'a t -> 'a array = "from" [@@bs.val][@@bs.scope "Array"]
+
+  (** Returns a minimum (resp maximum) element from the collection using the provided
+      [compare] function, or [None] if the collection is empty. In case of a tie, the first
+      element encountered while traversing the collection is returned. The implementation
+      uses [fold] so it has the same complexity as [fold]. *)
+  val min_elt : 'a t -> compare:('a -> 'a -> int) -> 'a option
+
+  val max_elt : 'a t -> compare:('a -> 'a -> int) -> 'a option
+end
+
 module type S1_phantom_invariant = sig
   type ('a, 'phantom) t
 
@@ -547,6 +651,7 @@ module type Container = sig
   module type S0 = S0
   module type S0_phantom = S0_phantom
   module type S1 = S1
+  module type S1_js_interop = S1_js_interop
   module type S1_phantom_invariant = S1_phantom_invariant
   module type S1_phantom = S1_phantom
   module type Generic = Generic

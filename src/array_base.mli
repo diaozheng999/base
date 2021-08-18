@@ -17,7 +17,7 @@ val t_sexp_grammar
 include Binary_searchable.S1 with type 'a t := 'a t
 
 
-include Container.S1 with type 'a t := 'a t
+include Container.S1_js_interop with type 'a t := 'a t
 include Invariant.S1 with type 'a t := 'a t
 
 (** Maximum length of a normal array.  The maximum length of a float array is
@@ -204,7 +204,7 @@ val for_all2_exn : 'a t -> 'b t -> f:('a -> 'b -> bool) -> bool
 val exists2_exn : 'a t -> 'b t -> f:('a -> 'b -> bool) -> bool
 
 (** [filter t ~f] removes the elements for which [f] returns false.  *)
-val filter : 'a t -> f:('a -> bool) -> 'a t
+external filter : 'a t -> f:('a -> bool [@bs.uncurry]) -> 'a t = "filter" [@@bs.send]
 
 (** Like [filter] except [f] also receives the index. *)
 val filteri : 'a t -> f:(int -> 'a -> bool) -> 'a t
@@ -264,7 +264,7 @@ val find_consecutive_duplicate : 'a t -> equal:('a -> 'a -> bool) -> ('a * 'a) o
     on the empty array. *)
 val reduce : 'a t -> f:('a -> 'a -> 'a) -> 'a option
 
-val reduce_exn : 'a t -> f:('a -> 'a -> 'a) -> 'a
+external reduce_exn : 'a t -> f:('a -> 'a -> 'a[@bs.uncurry]) -> 'a = "reduce" [@@bs.send]
 
 (** [permute ?random_state ?pos ?len t] randomly permutes [t] in place.
 

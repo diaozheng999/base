@@ -281,7 +281,8 @@ let sort ?pos ?len arr ~compare =
   Sort.Intro_sort.sort arr ~compare ~left:pos ~right:(pos + len - 1)
 ;;
 
-let to_array t = t
+external to_array : 'a t -> 'a t = "from" [@@bs.val][@@bs.scope "Array"]
+
 let is_empty t = length t = 0
 
 let is_sorted t ~compare =
@@ -517,18 +518,11 @@ let fold2_exn t1 t2 ~init ~f =
   foldi t1 ~init ~f:(fun i ac x -> f ac x (unsafe_get t2 i))
 ;;
 
-let filter t ~f = filter_map t ~f:(fun x -> if f x then Some x else None)
+external filter : 'a t -> f:('a -> bool [@bs.uncurry]) -> 'a t = "filter" [@@bs.send]
+
 let filteri t ~f = filter_mapi t ~f:(fun i x -> if f i x then Some x else None)
 
-
-let exists t ~f =
-  let i = ref (length t - 1) in
-  let result = ref false in
-  while !i >= 0 && not !result do
-    if f (unsafe_get t !i) then result := true else decr i
-  done;
-  !result
-;;
+external exists : 'a t -> f:('a -> bool [@bs.uncurry]) -> bool = "some" [@@bs.send]
 
 let existsi t ~f =
   let i = ref (length t - 1) in
@@ -541,14 +535,7 @@ let existsi t ~f =
 
 let mem t a ~equal = exists t ~f:(equal a)
 
-let for_all t ~f =
-  let i = ref (length t - 1) in
-  let result = ref true in
-  while !i >= 0 && !result do
-    if not (f (unsafe_get t !i)) then result := false else decr i
-  done;
-  !result
-;;
+external for_all : 'a t -> f:('a -> bool [@bs.uncurry]) -> bool = "every" [@@bs.send]
 
 let for_alli t ~f =
   let length = length t in
@@ -632,7 +619,7 @@ let find_exn t ~f =
     ~if_not_found:(fun () -> raise (Not_found_s (Atom "Array.find_exn: not found")))
 ;;
 
-let find t ~f = Option.map (findi t ~f:(fun _i x -> f x)) ~f:(fun (_i, x) -> x)
+external find : 'a t -> f:('a -> bool [@bs.uncurry]) -> bool = "find" [@@bs.send]
 
 let find_map t ~f =
   let length = length t in
@@ -718,11 +705,12 @@ let reduce t ~f =
     Some !r)
 ;;
 
-let reduce_exn t ~f =
-  match reduce t ~f with
-  | None -> invalid_arg "Array.reduce_exn"
-  | Some v -> v
-;;
+external reduce_exn : 'a t -> f:('a -> 'a -> 'a[@bs.uncurry]) -> 'a = "reduce" [@@bs.send]
+
+let reduce t ~f =
+  if length t = 0
+    then None
+  else Some (reduce_exn t ~f)
 
 let permute = Array_permute.permute
 
@@ -854,6 +842,8 @@ include Blit.Make1 (struct
   end)
 
 let invariant invariant_a t = iter t ~f:invariant_a
+
+external length : 'a t -> int = "length" [@@bs.send]
 
 module Private = struct
   module Sort = Sort
