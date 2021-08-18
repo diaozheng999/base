@@ -334,7 +334,7 @@ module type S1_js_interop = sig
   (** Checks whether the provided element is there, using [equal]. *)
   val mem : 'a t -> 'a -> equal:('a -> 'a -> bool) -> bool
 
-  external length : 'a t -> int = "length" [@@bs.send]
+  external length : 'a t -> int = "length" [@@bs.get]
   val is_empty : 'a t -> bool
 
   external iter : 'a t -> f:('a -> unit [@bs.uncurry]) -> unit ="forEach" [@@bs.send]

@@ -843,7 +843,7 @@ include Blit.Make1 (struct
 
 let invariant invariant_a t = iter t ~f:invariant_a
 
-external length : 'a t -> int = "length" [@@bs.send]
+external length : 'a t -> int = "length" [@@bs.get]
 
 module Private = struct
   module Sort = Sort
